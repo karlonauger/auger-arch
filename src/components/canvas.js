@@ -210,14 +210,14 @@ const canvasDots = function () {
     }
   
     window.onmousemove = function (parameter) {
-      mousePosition.x = parameter.pageX;
-      mousePosition.y = parameter.pageY;
+      mousePosition.x = parameter.clientX; // parameter.pageX;
+      mousePosition.y = parameter.clientY; // parameter.pageY;
   
       // sometimes if the mouse is off screen on refresh, it bugs out
       try {
         // want the first dot to follow the mouse
-        dots.array[0].x = parameter.pageX;
-        dots.array[0].y = parameter.pageY;
+        dots.array[0].x = parameter.clientX; // parameter.pageX;
+        dots.array[0].y = parameter.clientY; // parameter.pageY;
       } catch {
         //
       }
