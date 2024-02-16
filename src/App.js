@@ -6,9 +6,11 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
  // We import all the components we need in our app
 import Navbar from "./components/navbar";
+import Title from "./components/title";
 import RecordList from "./components/recordList";
 import Edit from "./components/edit";
 import Create from "./components/create";
+import PartnerToProfit from "./components/partnerToProfit";
 
 function App() {
   return (
@@ -17,15 +19,13 @@ function App() {
         <canvas className="connecting-dots" style={ { display: 'block' } } />
       </div>
       <Navbar />
+      <Title />
+      <PartnerToProfit />
       <Routes>
         <Route exact path="/" element={<RecordList />} />
         <Route path="/edit/:id" element={<Edit />} />
         <Route path="/create" element={<Create />} />
       </Routes>
-      <div class="heading">
-        <h1>Hello, I'm Karlon</h1>
-        <h2>I'm a full stack web developer</h2>
-      </div>
     </div>
   );
 }
