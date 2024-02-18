@@ -6,7 +6,10 @@ import { NavLink } from "react-router-dom";
 
 export default function Title() {
   return (
-    <div className="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center" style={ { height: window.innerHeight } }>
+    <div
+      className="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center"
+      style={{ height: '100vh', display: 'flex', alignItems: 'center' }}
+    >
       <div className="col-md-8 p-lg-5 mx-auto my-5">
         <h1 className="display-3 fw-bold">Hello, I'm Karlon</h1>
         <h2 className="fw-normal text-muted mb-3">I'm a full stack web developer</h2>

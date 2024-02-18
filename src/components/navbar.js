@@ -1,7 +1,4 @@
 import React from "react";
-// We import bootstrap to make our application look better.
-import "bootstrap/dist/css/bootstrap.css";
- // We import NavLink to utilize the react router.
 import { NavLink } from "react-router-dom";
 
 export default function Navbar() {
@@ -29,10 +26,7 @@ export default function Navbar() {
                 <NavLink className="nav-link" to="#skills">Skills</NavLink>
               </li>
               <li className="nav-item">
-                <NavLink className="nav-link" to="#projects">Projects</NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink className="nav-link" to="#P2P">P2P</NavLink>
+                <NavLink className="nav-link" to="#profit">Partner To Profit</NavLink>
               </li>
               <li className="nav-item">
                 <NavLink className="nav-link" to="#tetris">Tetris</NavLink>

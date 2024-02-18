@@ -1,16 +1,17 @@
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.css';
 import './components/canvas.js';
 
 import React from "react";
-// We use Route in order to define the different routes of our application
 import { Route, Routes } from "react-router-dom";
- // We import all the components we need in our app
+
 import Navbar from "./components/navbar";
 import Title from "./components/title";
+import PartnerToProfit from "./components/partnerToProfit";
 import RecordList from "./components/recordList";
 import Edit from "./components/edit";
 import Create from "./components/create";
-import PartnerToProfit from "./components/partnerToProfit";
+import Footer from "./components/footer";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/edit/:id" element={<Edit />} />
         <Route path="/create" element={<Create />} />
       </Routes>
+      <Footer />
     </div>
   );
 }

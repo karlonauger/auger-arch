@@ -3,7 +3,7 @@ import React from 'react';
 const PartnerToProfit = () => {
   return (
     <div className="jumbotron">
-      <div className="position-relative container my-5">
+      <div id="profit" className="position-relative container my-5">
         <div className="p-5 text-center bg-body-tertiary rounded-3">
           <div className="row">
             <div className="col-md-6">
@@ -22,10 +22,10 @@ const PartnerToProfit = () => {
               <p className="mx-auto text-muted">
                 PHP-based SAAS application to model financial outcomes of business partnerships
               </p>
-              <div class="d-inline-flex gap-2 mb-5">
+              <div class="d-inline-flex gap-2">
                 <a
                   className="btn btn-primary btn-lg mr-5"
-                  href="https://www.partnertoprofit.biz"
+                  href="https://www.partnertoprofit.biz/home.php"
                   target="_blank"
                   rel="noopener noreferrer"
                   role="button"
