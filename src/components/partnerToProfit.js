@@ -22,7 +22,7 @@ const PartnerToProfit = () => {
               <p className="mx-auto text-muted">
                 PHP-based SAAS application to model financial outcomes of business partnerships
               </p>
-              <div class="d-inline-flex gap-2">
+              <div className="d-inline-flex gap-2">
                 <a
                   className="btn btn-primary btn-lg mr-5"
                   href="https://www.partnertoprofit.biz/home.php"

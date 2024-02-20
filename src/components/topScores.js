@@ -23,13 +23,10 @@ const TopScores = () => {
       
       const scores = await response.json();
 
-      console.log(scores);
-
       // Fetch user details for each score
       const scoresWithUserDetails = await Promise.all(
         scores.map(async (score) => {
           const userResponse = await fetch(`http://localhost:5000/user/${score.user}`);
-          console.log(userResponse);
           if (!userResponse.ok) {
             throw new Error('Failed to fetch user details');
           }
@@ -38,8 +35,7 @@ const TopScores = () => {
           return { ...score, userDetails: userData };
         })
       );
-      console.log(scoresWithUserDetails);
-
+      
       setTopScores(scoresWithUserDetails);
     }
     getTopScores();
