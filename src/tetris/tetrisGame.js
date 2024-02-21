@@ -1,7 +1,7 @@
 import Piece from './piece';
 
 class TetrisGame {
-  constructor(canvasId) {
+  constructor(canvasId, nextCanvasId) {
     this.blockNames = [
       'Red',
       'Green',
@@ -17,11 +17,16 @@ class TetrisGame {
     this.score = 0;
     this.lines = 0;
     this.level = 1;
+    this.nextPiece = null;
     this.piece = null;
 
     this.canvas = document.getElementById(canvasId);
     this.context = this.canvas.getContext('2d');
     this.context.scale(20, 20);
+
+    this.nextCanvas = document.getElementById(nextCanvasId);
+    this.nextContext = this.nextCanvas.getContext('2d');
+    this.nextContext.scale(20, 20);
 
     this.dropCounter = 0;
     this.dropInterval = 1000;
@@ -37,7 +42,7 @@ class TetrisGame {
 
     // Wait for all images to be loaded before continuing
     this.loadBlocks().then(() => {
-      this.update();
+      //this.update();
     });
   }
 
@@ -66,12 +71,11 @@ class TetrisGame {
     return matrix;
   }
 
-  drawMatrix(matrix, offset) {
+  drawMatrix(context, matrix, offset) {
     matrix.forEach((row, y) => {
       row.forEach((value, x) => {
         if (value !== 0) {
-          console.log(this.blocks[value - 1]);
-          this.context.drawImage(this.blocks[value - 1], x + offset.x, y + offset.y, 1, 1);
+          context.drawImage(this.blocks[value - 1], x + offset.x, y + offset.y, 1, 1);
         }
       });
     });
@@ -80,9 +84,11 @@ class TetrisGame {
   draw() {
     this.context.fillStyle = '#000';
     this.context.fillRect(0, 0, this.canvas.width / 20, this.canvas.height / 20);
+    this.nextContext.fillRect(0, 0, this.nextCanvas.width / 20, this.nextCanvas.height / 20);
 
-    this.drawMatrix(this.arena, { x: 0, y: 0 });
-    this.drawMatrix(this.piece.matrix, this.piece.pos);
+    this.drawMatrix(this.context, this.arena, { x: 0, y: 0 });
+    this.drawMatrix(this.context, this.piece.matrix, this.piece.pos);
+    this.drawMatrix(this.nextContext, this.nextPiece.matrix, { x: 0, y: 0 });
   }
 
   updateStats() {
@@ -114,7 +120,9 @@ class TetrisGame {
   }
 
   playerReset() {
-    this.piece = new Piece(this.arena[0].length / 2);
+    const center = this.arena[0].length / 2;
+    this.piece = this.nextPiece ? this.nextPiece : new Piece(center);
+    this.nextPiece = new Piece(center);
 
     // Game Over - New piece already colides with arena
     if (this.piece.collide(this.arena)) {
