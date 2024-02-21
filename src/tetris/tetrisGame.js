@@ -2,16 +2,16 @@ import Piece from './piece';
 
 class TetrisGame {
   constructor(canvasId) {
-    this.colors = [
-      null,
-      '#FF0D72',
-      '#0DC2FF',
-      '#0DFF72',
-      '#F538FF',
-      '#FF8E0D',
-      '#FFE138',
-      '#3877FF',
+    this.blockNames = [
+      'Red',
+      'Green',
+      'Purple',
+      'Blue',
+      'DarkRed',
+      'Orange',
+      'LightBlue',
     ];
+    this.blocks = [];
 
     this.arena = this.createMatrix(12, 20);
     this.score = 0;
@@ -31,11 +31,38 @@ class TetrisGame {
     this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
+  init() {
+    document.addEventListener('keydown', this.handleKeyDown);
+    this.playerReset();
+
+    // Wait for all images to be loaded before continuing
+    this.loadBlocks().then(() => {
+      this.update();
+    });
+  }
+
+  loadBlocks() {
+    const imagePromises = this.blockNames.map((blockName, index) => {
+      return this.loadImage(`/tetris/${blockName}.png`).then((image) => {
+        this.blocks[index] = image;
+      });
+    });
+
+    return Promise.all(imagePromises);
+  }
+
+  loadImage(src) {
+    return new Promise((resolve, reject) => {
+      const image = new Image();
+      image.onload = () => resolve(image);
+      image.onerror = (error) => reject(error);
+      image.src = src;
+    });
+  }
+
   createMatrix(w, h) {
     const matrix = [];
-    while (h--) {
-      matrix.push(new Array(w).fill(0));
-    }
+    while (h--) { matrix.push(new Array(w).fill(0)); }
     return matrix;
   }
 
@@ -43,8 +70,8 @@ class TetrisGame {
     matrix.forEach((row, y) => {
       row.forEach((value, x) => {
         if (value !== 0) {
-          this.context.fillStyle = this.colors[value];
-          this.context.fillRect(x + offset.x, y + offset.y, 1, 1);
+          console.log(this.blocks[value - 1]);
+          this.context.drawImage(this.blocks[value - 1], x + offset.x, y + offset.y, 1, 1);
         }
       });
     });
@@ -100,15 +127,13 @@ class TetrisGame {
   }
 
   calculateDropInterval(level) {
-    const frameRate = 60;
-    const cellsToBottom = 20;
-  
-    // Frame data for each level
+    // second data for each level
     const secondsToBottom = [
       15.974, 14.310, 12.646, 10.982, 9.318, 7.654, 5.990, 4.326, 2.662, 1.997, 1.664, 1.664,1.664,
       1.331, 1.331, 1.331, 0.998, 0.998, 0.998, 0.666, 0.666, 0.666, 0.666, 0.666, 0.666, 0.666,
       0.666, 0.666, 0.666, 0.333
     ];
+    const cellsToBottom = 20;
   
     return (secondsToBottom[level] / cellsToBottom) * 1000;
   }
@@ -155,12 +180,6 @@ class TetrisGame {
       default:
         break;
     }
-  }
-
-  init() {
-    document.addEventListener('keydown', this.handleKeyDown);
-    this.playerReset();
-    this.update();
   }
 
   update(time = 0) {
