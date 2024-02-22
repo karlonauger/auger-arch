@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 
 const Score = (props) => (
   <tr>
+    <td>{props.score.userDetails.username}</td>
     <td>{props.score.score}</td>
-    <td>{props.score.userDetails.name}</td>
-    <td>{props.score.score}</td>
+    <td>{props.score.level}</td>
   </tr>
 );
 
-const TopScores = () => {
+const TopScores = ({ onScoreUpdate }) => {
   const [scores, setTopScores] = useState([]);
   // This method fetches the records from the database.
   useEffect(() => {
@@ -40,16 +40,13 @@ const TopScores = () => {
     }
     getTopScores();
     return;
-  }, [scores.length]);
+  }, [onScoreUpdate]);
 
   // This method will map out the records on the table
   function TopScores() {
     return scores.map((score) => {
       return (
-        <Score
-          score={score}
-          key={score._id}
-        />
+        <Score score={score} key={score._id}/>
       );
     });
   }
@@ -57,12 +54,11 @@ const TopScores = () => {
   // This following section will display the table with the records of individuals.
   return (
     <div className="position-relative">
-      <h3>Top Scores</h3>
-      <table className="table table-striped">
+      <table className="table table-striped text-start">
         <thead>
           <tr>
-            <th>Score</th>
-            <th>Name</th>
+            <th>Player</th>
+            <th>High Score</th>
             <th>Level</th>
           </tr>
         </thead>

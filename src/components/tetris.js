@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Route, Routes } from 'react-router-dom';
 
 import TopScores from './topScores';
-import Edit from './edit';
-import Create from './create';
 import TetrisGame from '../tetris/tetrisGame';
 
 const Tetris = () => {
   const [playerName, setPlayerName] = useState('');
   const [gameStarted, setGameStarted] = useState(false);
-  const [tetrisGame, setTetrisGame] = useState('');
+  const [tetrisGame, setTetrisGame] = useState(null);
+  const [gameCount, setGameCount] = useState(0); // Triggers TopScores refresh
 
   useEffect(() => {
-    const game = new TetrisGame('tetrisCanvas', 'nextPieceCanvas')
+    const game = new TetrisGame('tetrisCanvas', 'nextPieceCanvas', postScore)
     game.init();
 
     setTetrisGame(game);
@@ -22,7 +20,6 @@ const Tetris = () => {
     const startButton = document.getElementById('startButton');
     const handleStartClick = () => {
       // Validate player name
-      console.log(playerName);
       if (playerName.trim() === '') {
         alert('Please enter a valid player name.');
         return;
@@ -30,7 +27,7 @@ const Tetris = () => {
       
       setGameStarted(true); // Hide game menu
       
-      tetrisGame.update();
+      tetrisGame.startGame(playerName);
     };
 
     startButton.addEventListener('click', handleStartClick);
@@ -42,6 +39,44 @@ const Tetris = () => {
   const handleNameChange = (event) => {
     setPlayerName(event.target.value);
   };
+
+  const postScore = async (name, score, level) => {
+    try {
+      // Find or create user
+      const response = await fetch(`http://localhost:5000/find-or-create-user/${name}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        }
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+  
+      const user = await response.json();
+  
+      // Add score for the user
+      const scoreResponse = await fetch('http://localhost:5000/add-score', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId: user._id, score: score, level: level })
+      });
+
+      if (!scoreResponse.ok) {
+        throw new Error(`HTTP error! Status: ${scoreResponse.status}`);
+      }
+
+      await scoreResponse.json();
+
+      setGameCount((gameCount) => { gameCount++; });
+    } catch (error) {
+      console.error(error);
+      window.alert(error.message);
+    }
+  }
 
   return (
     <div className="jumbotron">
@@ -74,7 +109,7 @@ const Tetris = () => {
                 </form>
               </div>
             </div>
-            <div className="col-md-3 text-start">
+            <div className="col-md-5 text-start">
               <div id="game-stats" className={!gameStarted ? 'd-none' : ''}>
                 <h5>Player: <span id="player">{playerName}</span></h5>
                 <h5>Score: <span id="score">0</span></h5>
@@ -84,12 +119,8 @@ const Tetris = () => {
                 <canvas id="nextPieceCanvas" width="80" height="80"></canvas>
               </div>
             </div>
-            <div className="col-md-6">
-              <Routes>
-                <Route exact path="/" element={<TopScores />} />
-                <Route path="/edit/:id" element={<Edit />} />
-                <Route path="/create" element={<Create />} />
-              </Routes>
+            <div className="col-md-4">
+              <TopScores onScoreUpdate={gameCount}/>
             </div>
           </div>
         </div>

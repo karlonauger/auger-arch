@@ -1,7 +1,7 @@
 import Piece from './piece';
 
 class TetrisGame {
-  constructor(canvasId, nextCanvasId) {
+  constructor(canvasId, nextCanvasId, postScore) {
     this.blockNames = [
       'Red',
       'Green',
@@ -17,6 +17,7 @@ class TetrisGame {
     this.score = 0;
     this.lines = 0;
     this.level = 1;
+    this.gameOver = false;
     this.nextPiece = null;
     this.piece = null;
 
@@ -30,15 +31,15 @@ class TetrisGame {
 
     this.dropCounter = 0;
     this.dropInterval = 1000;
-
     this.lastTime = 0;
 
+    this.postScore = postScore; // Callback to post score
     this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
   init() {
     document.addEventListener('keydown', this.handleKeyDown);
-    this.playerReset();
+    this.reset();
 
     // Wait for all images to be loaded before continuing
     this.loadBlocks().then(() => {
@@ -112,25 +113,21 @@ class TetrisGame {
     if (this.piece.collide(this.arena)) {
       this.piece.pos.y--;
       this.merge(this.arena, this.piece);
-      this.playerReset();
+      this.reset();
       this.arenaSweep();
       this.updateStats();
     }
     this.dropCounter = 0;
   }
 
-  playerReset() {
+  reset() {
     const center = this.arena[0].length / 2;
     this.piece = this.nextPiece ? this.nextPiece : new Piece(center);
     this.nextPiece = new Piece(center);
 
-    // Game Over - New piece already colides with arena
+    // Game Over - New piece already collides with arena
     if (this.piece.collide(this.arena)) {
-      this.arena.forEach(row => row.fill(0));
-      this.score = 0;
-      this.lines = 0;
-      this.level = 0;
-      this.updateStats();
+      this.gameOver = true;
     }
   }
 
@@ -190,6 +187,17 @@ class TetrisGame {
     }
   }
 
+  startGame(playerName) {
+    this.playerName = playerName;
+    this.arena.forEach(row => row.fill(0));
+    this.score = 0;
+    this.lines = 0;
+    this.level = 0;
+    this.gameOver = false;
+    this.updateStats();
+    this.update();
+  }
+
   update(time = 0) {
     const deltaTime = time - this.lastTime;
 
@@ -201,7 +209,12 @@ class TetrisGame {
     this.lastTime = time;
 
     this.draw();
-    requestAnimationFrame(this.update.bind(this));
+
+    if (this.gameOver) {
+      this.postScore(this.playerName, this.score, this.level);
+    } else {
+      requestAnimationFrame(this.update.bind(this)); 
+    }
   }
 }
 
