@@ -18,23 +18,31 @@ const Tetris = () => {
 
   useEffect(() => {
     const startButton = document.getElementById('startButton');
-    const handleStartClick = () => {
-      // Validate player name
-      if (playerName.trim() === '') {
-        alert('Please enter a valid player name.');
-        return;
-      }
-      
-      setGameStarted(true); // Hide game menu
-      
-      tetrisGame.startGame(playerName);
-    };
 
     startButton.addEventListener('click', handleStartClick);
 
     // Cleanup the event listener when the component unmounts
     return () => { startButton.removeEventListener('click', handleStartClick); };
   }, [tetrisGame, playerName]);
+
+  const handleStartClick = () => {
+    // Validate player name
+    if (playerName.trim() === '') {
+      alert('Please enter a valid player name.');
+      return;
+    }
+    
+    setGameStarted(true); // Hide game menu
+    
+    tetrisGame.startGame(playerName);
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      handleStartClick();
+    }
+  };
 
   const handleNameChange = (event) => {
     setPlayerName(event.target.value);
@@ -74,7 +82,6 @@ const Tetris = () => {
       setGameCount((gameCount) => { gameCount++; });
     } catch (error) {
       console.error(error);
-      window.alert(error.message);
     }
   }
 
@@ -99,6 +106,7 @@ const Tetris = () => {
                       placeholder="Player Name"
                       value={playerName}
                       onChange={handleNameChange}
+                      onKeyDown={handleKeyDown}
                     />
                   </div>
                   <button
@@ -117,6 +125,17 @@ const Tetris = () => {
                 <h5>Lines: <span id="lines">0</span></h5>
                 <h5>Next Piece</h5>
                 <canvas id="nextPieceCanvas" width="80" height="80"></canvas>
+              </div>
+              <div id="game-controls" className={gameStarted ? 'd-none' : ''}>
+                <h5>Controls</h5>
+                <p>
+                  Rotate Clockwise - Z Key / Up Arrow<br/>
+                  Rotate Couter Clockwise - X Key<br/>
+                  Move Left - Left Arrow<br/>
+                  Move Right - Right Arrow<br/>
+                  Soft Drop - Down Arrow<br/>
+                  Hard Drop - Space Bar
+                </p>
               </div>
             </div>
             <div className="col-md-4">

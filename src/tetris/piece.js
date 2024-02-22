@@ -1,48 +1,51 @@
 class Piece {
-  static pieceMap = new Map([
-    ['I', [
+  static pieceMap = {
+    I: [
       [0, 1, 0, 0],
       [0, 1, 0, 0],
       [0, 1, 0, 0],
       [0, 1, 0, 0],
-    ]],
-    ['L', [
+    ],
+    L: [
       [0, 2, 0],
       [0, 2, 0],
       [0, 2, 2],
-    ]],
-    ['J', [
+    ],
+    J: [
       [0, 3, 0],
       [0, 3, 0],
       [3, 3, 0],
-    ]],
-    ['O', [
+    ],
+    O: [
       [4, 4],
       [4, 4],
-    ]],
-    ['Z', [
+    ],
+    Z: [
       [5, 5, 0],
       [0, 5, 5],
       [0, 0, 0],
-    ]],
-    ['S', [
+    ],
+    S: [
       [0, 6, 6],
       [6, 6, 0],
       [0, 0, 0],
-    ]],
-    ['T', [
+    ],
+    T: [
       [0, 7, 0],
       [7, 7, 7],
       [0, 0, 0],
-    ]],
-  ]);
-  static pieceKeys = Array.from(Piece.pieceMap.keys())
+    ],
+  };
+  static pieceKeys = Object.keys(Piece.pieceMap);
 
   constructor(x = 0, type) {
-    if(!type) {
+    if(!type) { // Pick a random piece
       type = Piece.pieceKeys[Math.floor(Math.random() * Piece.pieceKeys.length)]
     }
-    this.matrix = JSON.parse(JSON.stringify(Piece.pieceMap.get(type)));
+
+    // Pass by reference
+    this.matrix = JSON.parse(JSON.stringify(Piece.pieceMap[type]));
+
     this.pos = {
       x: x - Math.floor(this.matrix[0].length / 2),
       y: 0

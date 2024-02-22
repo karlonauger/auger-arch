@@ -17,7 +17,7 @@ const TopScores = ({ onScoreUpdate }) => {
       
       if (!response.ok) {
         const message = `An error occurred: ${response.statusText}`;
-        window.alert(message);
+        console.log(message);
         return;
       }
       

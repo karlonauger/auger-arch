@@ -38,7 +38,6 @@ class TetrisGame {
   }
 
   init() {
-    document.addEventListener('keydown', this.handleKeyDown);
     this.reset();
 
     // Wait for all images to be loaded before continuing
@@ -108,7 +107,7 @@ class TetrisGame {
     });
   }
 
-  playerDrop() {
+  drop(player) {
     this.piece.pos.y++;
     if (this.piece.collide(this.arena)) {
       this.piece.pos.y--;
@@ -116,6 +115,11 @@ class TetrisGame {
       this.reset();
       this.arenaSweep();
       this.updateStats();
+    } else {
+      if (player) {
+        this.score++;
+        this.updateStats();
+      }
     }
     this.dropCounter = 0;
   }
@@ -166,20 +170,32 @@ class TetrisGame {
   }
 
   handleKeyDown(event) {
-    switch (event.keyCode) {
-      case 37: // Left
+    switch (event.key) {
+      case 'ArrowLeft':
         this.piece.move(this.arena, -1);
         break;
-      case 39: // Right
+      case 'ArrowRight':
         this.piece.move(this.arena, 1);
+        break; 
+      case 'ArrowDown':
+        event.preventDefault();
+        this.drop(true);
         break;
-      case 40: // Down
-        this.playerDrop();
+      case ' ': // Spacebar
+        event.preventDefault();
+        this.currentPiece = this.piece
+        while(this.piece === this.currentPiece) {
+          this.drop(true);
+        }
         break;
-      case 81: // q
+      case 'z':
         this.piece.rotate(this.arena, -1);
         break;
-      case 87: // w
+      case 'ArrowUp':
+        event.preventDefault();
+        this.piece.rotate(this.arena, -1);
+        break;
+      case 'x':
         this.piece.rotate(this.arena, 1);
         break;
       default:
@@ -188,6 +204,7 @@ class TetrisGame {
   }
 
   startGame(playerName) {
+    document.addEventListener('keydown', this.handleKeyDown);
     this.playerName = playerName;
     this.arena.forEach(row => row.fill(0));
     this.score = 0;
@@ -203,7 +220,7 @@ class TetrisGame {
 
     this.dropCounter += deltaTime;
     if (this.dropCounter > this.dropInterval) {
-      this.playerDrop();
+      this.drop(false);
     }
 
     this.lastTime = time;
