@@ -13,7 +13,7 @@ const TopScores = ({ onScoreUpdate }) => {
   // This method fetches the records from the database.
   useEffect(() => {
     async function getTopScores() {
-      const response = await fetch(`http://localhost:5000/top-scores/`);
+      const response = await fetch(`http://localhost:5000/top-scores?limit=8`);
       
       if (!response.ok) {
         console.log(`An error occurred: ${response.statusText}`);

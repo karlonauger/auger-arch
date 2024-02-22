@@ -97,7 +97,6 @@ const canvasDots = function () {
     }
 
     animate() {
-      // TODO: dont animate the first dot, it will follow mouse
       if (this.y < 0 || this.y > canvas.height) {
         this.vy = -this.vy;
       } else if (this.x < 0 || this.x > canvas.width) {

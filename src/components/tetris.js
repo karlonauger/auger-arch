@@ -6,11 +6,12 @@ import TetrisGame from '../tetris/tetrisGame';
 const Tetris = () => {
   const [playerName, setPlayerName] = useState('');
   const [gameStarted, setGameStarted] = useState(false);
+  const [gameOverFlag, setGameOverFlag] = useState(false);
   const [tetrisGame, setTetrisGame] = useState(null);
   const [gameCount, setGameCount] = useState(0); // Triggers TopScores refresh
 
   useEffect(() => {
-    const game = new TetrisGame('tetrisCanvas', 'nextPieceCanvas', postScore)
+    const game = new TetrisGame('tetrisCanvas', 'nextPieceCanvas', gameOver)
     game.init();
 
     setTetrisGame(game);
@@ -18,11 +19,16 @@ const Tetris = () => {
 
   useEffect(() => {
     const startButton = document.getElementById('startButton');
+    const restartButton = document.getElementById('restartButton');
 
     startButton.addEventListener('click', handleStartClick);
+    restartButton.addEventListener('click', handleRestartClick);
 
     // Cleanup the event listener when the component unmounts
-    return () => { startButton.removeEventListener('click', handleStartClick); };
+    return () => {
+      startButton.removeEventListener('click', handleStartClick);
+      restartButton.removeEventListener('click', handleRestartClick);
+    };
   }, [tetrisGame, playerName]);
 
   const handleStartClick = () => {
@@ -31,11 +37,19 @@ const Tetris = () => {
       alert('Please enter a valid player name.');
       return;
     }
-    
-    setGameStarted(true); // Hide game menu
-    
-    tetrisGame.startGame(playerName);
+
+    findOrCreatePlayer(playerName).then((player) => {
+      setGameStarted(true); // Hide game menu
+
+      tetrisGame.startGame(player);
+    });    
   };
+
+  const handleRestartClick = () => {
+    setGameOverFlag(false); // Hide game over
+
+    tetrisGame.restartGame();
+  }
 
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
@@ -48,7 +62,13 @@ const Tetris = () => {
     setPlayerName(event.target.value);
   };
 
-  const postScore = async (name, score, level) => {
+  const gameOver = (player, score, level) => {
+    postScore(player, score, level);
+
+    setGameOverFlag(true);
+  }
+
+  const findOrCreatePlayer = async (name) => {
     try {
       // Find or create user
       const response = await fetch(`http://localhost:5000/find-or-create-user/${name}`, {
@@ -62,24 +82,30 @@ const Tetris = () => {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
   
-      const user = await response.json();
-  
-      // Add score for the user
+      return await response.json();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const postScore = async (player, score, level) => {
+    try {
       const scoreResponse = await fetch('http://localhost:5000/add-score', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userId: user._id, score: score, level: level })
+        body: JSON.stringify({ userId: player._id, score: score, level: level })
       });
 
       if (!scoreResponse.ok) {
         throw new Error(`HTTP error! Status: ${scoreResponse.status}`);
       }
 
-      await scoreResponse.json();
-
-      setGameCount((gameCount) => { gameCount++; });
+      await scoreResponse.json().then(() => {
+        // Game count triggers Top Score to update
+        setGameCount((prevGameCount) => prevGameCount + 1);
+      });
     } catch (error) {
       console.error(error);
     }
@@ -94,11 +120,10 @@ const Tetris = () => {
               <canvas id="tetrisCanvas" width="240" height="400"></canvas>
               <div id="game-menu" className={
                 `position-absolute top-50 start-50 translate-middle ${gameStarted ? 'd-none' : ''}`
-              }>
-                <h1>Tetris</h1>
+              } style={{ marginTop: '40px' }}>
                 <form>
-                  <div className="mb-3">
-                    <label htmlFor="playerName" className="form-label">Enter your name:</label>
+                  <div className="mb-3 mt-10">
+                    <label htmlFor="playerName" className="form-label mt-10">Enter your name:</label>
                     <input 
                       id="playerName"
                       type="text"
@@ -113,7 +138,19 @@ const Tetris = () => {
                     id="startButton"
                     type="button"
                     className="btn btn-primary"
-                  >Start Game</button>
+                  >Start</button>
+                </form>
+              </div>
+              <div id="game-over" className={
+                `position-absolute top-50 start-50 translate-middle ${!gameOverFlag ? 'd-none' : ''}`
+              }>
+                <form>
+                  <h4 className="text-danger">GAME OVER</h4>
+                  <button
+                    id="restartButton"
+                    type="button"
+                    className="btn btn-primary"
+                  >Restart</button>
                 </form>
               </div>
             </div>

@@ -1,7 +1,7 @@
 import Piece from './piece';
 
 class TetrisGame {
-  constructor(canvasId, nextCanvasId, postScore) {
+  constructor(canvasId, nextCanvasId, gameOverCB) {
     this.blockNames = [
       'Red',
       'Green',
@@ -12,6 +12,29 @@ class TetrisGame {
       'LightBlue',
     ];
     this.blocks = [];
+
+    this.menuArena = [
+      [0,0,0,0,0,0,0,0,0,0,0,0],
+      [0,7,7,7,0,0,0,0,0,0,0,0],
+      [0,0,7,4,4,0,0,0,0,1,1,0],
+      [0,0,7,4,3,3,3,2,0,1,0,0],
+      [0,0,7,4,4,3,5,5,0,1,1,0],
+      [0,0,7,4,0,3,5,2,0,0,1,0],
+      [0,0,0,4,4,3,5,2,0,1,1,0],
+      [0,0,0,0,0,3,5,2,0,0,0,0],
+      [0,0,0,0,0,0,5,0,0,0,0,0],
+      [1,0,0,0,0,0,0,0,0,0,0,0],
+      [1,0,0,0,0,0,0,0,0,0,0,0],
+      [1,0,0,0,0,0,0,0,0,0,0,0],
+      [1,0,0,0,0,0,0,0,0,0,0,3],
+      [4,4,0,0,0,0,0,0,0,0,0,3],
+      [4,4,0,0,0,0,0,0,0,0,3,3],
+      [3,3,3,0,0,0,0,0,0,0,6,6],
+      [5,5,3,0,0,0,0,0,0,6,6,1],
+      [2,5,5,4,4,0,0,0,4,4,0,1],
+      [2,5,5,4,4,7,0,0,4,4,2,1],
+      [2,2,5,5,7,7,7,0,2,2,2,1]
+    ];
 
     this.arena = this.createMatrix(12, 20);
     this.score = 0;
@@ -33,8 +56,14 @@ class TetrisGame {
     this.dropInterval = 1000;
     this.lastTime = 0;
 
-    this.postScore = postScore; // Callback to post score
+    this.gameOverCB = gameOverCB; // Callback to post score
     this.handleKeyDown = this.handleKeyDown.bind(this);
+  }
+
+  createMatrix(w, h) {
+    const matrix = [];
+    while (h--) { matrix.push(new Array(w).fill(0)); }
+    return matrix;
   }
 
   init() {
@@ -42,7 +71,10 @@ class TetrisGame {
 
     // Wait for all images to be loaded before continuing
     this.loadBlocks().then(() => {
-      //this.update();
+      this.context.fillStyle = '#000';
+      this.context.fillRect(0, 0, this.canvas.width / 20, this.canvas.height / 20);
+
+      this.drawMatrix(this.context, this.menuArena, { x: 0, y: 0 });
     });
   }
 
@@ -65,10 +97,21 @@ class TetrisGame {
     });
   }
 
-  createMatrix(w, h) {
-    const matrix = [];
-    while (h--) { matrix.push(new Array(w).fill(0)); }
-    return matrix;
+  startGame(player) {
+    document.addEventListener('keydown', this.handleKeyDown);
+    this.player = player;
+    
+    this.restartGame();
+  }
+
+  restartGame() {
+    this.arena.forEach(row => row.fill(0));
+    this.score = 0;
+    this.lines = 0;
+    this.level = 0;
+    this.gameOver = false;
+    this.updateStats();
+    this.update();
   }
 
   drawMatrix(context, matrix, offset) {
@@ -97,16 +140,6 @@ class TetrisGame {
     document.getElementById('lines').innerText = this.lines;
   }
 
-  merge(arena, piece) {
-    piece.matrix.forEach((row, y) => {
-      row.forEach((value, x) => {
-        if (value !== 0) {
-          arena[y + piece.pos.y][x + piece.pos.x] = value;
-        }
-      });
-    });
-  }
-
   drop(player) {
     this.piece.pos.y++;
     if (this.piece.collide(this.arena)) {
@@ -122,6 +155,16 @@ class TetrisGame {
       }
     }
     this.dropCounter = 0;
+  }
+
+  merge(arena, piece) {
+    piece.matrix.forEach((row, y) => {
+      row.forEach((value, x) => {
+        if (value !== 0) {
+          arena[y + piece.pos.y][x + piece.pos.x] = value;
+        }
+      });
+    });
   }
 
   reset() {
@@ -203,18 +246,6 @@ class TetrisGame {
     }
   }
 
-  startGame(playerName) {
-    document.addEventListener('keydown', this.handleKeyDown);
-    this.playerName = playerName;
-    this.arena.forEach(row => row.fill(0));
-    this.score = 0;
-    this.lines = 0;
-    this.level = 0;
-    this.gameOver = false;
-    this.updateStats();
-    this.update();
-  }
-
   update(time = 0) {
     const deltaTime = time - this.lastTime;
 
@@ -228,7 +259,7 @@ class TetrisGame {
     this.draw();
 
     if (this.gameOver) {
-      this.postScore(this.playerName, this.score, this.level);
+      this.gameOverCB(this.player, this.score, this.level);
     } else {
       requestAnimationFrame(this.update.bind(this)); 
     }
