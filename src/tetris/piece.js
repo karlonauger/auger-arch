@@ -42,7 +42,7 @@ class Piece {
     if(!type) {
       type = Piece.pieceKeys[Math.floor(Math.random() * Piece.pieceKeys.length)]
     }
-    this.matrix = Piece.pieceMap.get(type);
+    this.matrix = JSON.parse(JSON.stringify(Piece.pieceMap.get(type)));
     this.pos = {
       x: x - Math.floor(this.matrix[0].length / 2),
       y: 0
