@@ -16,8 +16,7 @@ const TopScores = ({ onScoreUpdate }) => {
       const response = await fetch(`http://localhost:5000/top-scores/`);
       
       if (!response.ok) {
-        const message = `An error occurred: ${response.statusText}`;
-        console.log(message);
+        console.log(`An error occurred: ${response.statusText}`);
         return;
       }
       
