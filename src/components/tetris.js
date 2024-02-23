@@ -112,11 +112,14 @@ const Tetris = () => {
   }
 
   return (
-    <div className="jumbotron">
-      <div id="tetris" className="position-relative container my-5">
+    <div id="tetris" className="jumbotron">
+      <div className="position-relative container my-5">
         <div className="p-5 text-center bg-body-tertiary rounded-3">
           <div className="row">
-            <div className="col-md-3 position-relative">
+            <div 
+              className="col-md-4 position-relative" 
+              style={{ 'minWidth': '262px', 'maxHeight': '400px' }}
+            >
               <canvas id="tetrisCanvas" width="240" height="400"></canvas>
               <div id="game-menu" className={
                 `position-absolute top-50 start-50 translate-middle ${gameStarted ? 'd-none' : ''}`
@@ -154,14 +157,14 @@ const Tetris = () => {
                 </form>
               </div>
             </div>
-            <div className="col-md-5 text-start">
+            <div className="col-md-4 text-start">
               <div id="game-stats" className={!gameStarted ? 'd-none' : ''}>
+                <h5>Next Piece</h5>
+                <canvas id="nextPieceCanvas" width="80" height="80"></canvas>
                 <h5>Player: <span id="player">{playerName}</span></h5>
                 <h5>Score: <span id="score">0</span></h5>
                 <h5>Level: <span id="level">0</span></h5>
                 <h5>Lines: <span id="lines">0</span></h5>
-                <h5>Next Piece</h5>
-                <canvas id="nextPieceCanvas" width="80" height="80"></canvas>
               </div>
               <div id="game-controls" className={gameStarted ? 'd-none' : ''}>
                 <h5>Controls</h5>

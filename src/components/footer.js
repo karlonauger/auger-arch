@@ -2,7 +2,7 @@
 import React from 'react';
 import { NavLink } from "react-router-dom";
 
-const Footer = () => {
+export default function Footer() {
   return (
     <div className="position-relative container">
       <footer className="d-flex justify-content-between align-items-center py-3 my-4 border-top">
@@ -41,5 +41,3 @@ const Footer = () => {
     </div>
   );
 };
-
-export default Footer;

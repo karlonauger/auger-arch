@@ -2,15 +2,15 @@ import React from 'react';
 
 const PartnerToProfit = () => {
   return (
-    <div className="jumbotron">
-      <div id="profit" className="position-relative container my-5">
+    <div id="profit" className="jumbotron">
+      <div className="position-relative container my-5">
         <div className="p-5 text-center bg-body-tertiary rounded-3">
           <div className="row">
-            <div className="col-md-6">
+            <div className="col-md-6 mb-3">
               <img
                 src="partner_to_profit_ss.png"
                 alt="Partner To Profit Screenshot"
-                className="img-fluid rounded"
+                className="img-fluid rounded-3 border border-5 border-primary-subtle"
               />
             </div>
             <div className="col-md-6">
