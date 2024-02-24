@@ -9,11 +9,11 @@ const canvasDots = function () {
   context.lineWidth = 0.3;
   context.strokeStyle = 'rgb(81, 162, 233)';
 
-  let mousePosition = {
+  const mousePosition = {
     x: (30 * canvas.width) / 100,
     y: (30 * canvas.height) / 100,
   };
-  
+
   let dots;
   const windowSize = window.innerWidth;
   if (windowSize > 1600) {
@@ -86,12 +86,12 @@ const canvasDots = function () {
       context.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
 
       // make the dot colour fade out the further they are from the mouse
-      const dotDistance = ((this.x - mousePosition.x) ** 2 + (this.y - mousePosition.y) ** 2) **
-        0.5;
+      const dotDistance = ((this.x - mousePosition.x) ** 2 + (this.y - mousePosition.y) ** 2)
+        ** 0.5;
       const distanceRatio = dotDistance / (windowSize / 1.7);
 
       // this chops the bracket off the rgb colour and ads an opacity
-      context.fillStyle = this.colour.slice(0, -1) + `,${1 - distanceRatio})`;
+      context.fillStyle = `${this.colour.slice(0, -1)},${1 - distanceRatio})`;
 
       context.fill();
     }
@@ -109,23 +109,23 @@ const canvasDots = function () {
     drawLines() {
       dots.array.forEach((otherDot) => {
         if (
-          this.x - otherDot.x < dots.distance &&
-          this.y - otherDot.y < dots.distance &&
-          this.x - otherDot.x > -dots.distance &&
-          this.y - otherDot.y > -dots.distance &&
-          this.x - mousePosition.x < dots.d_radius &&
-          this.y - mousePosition.y < dots.d_radius &&
-          this.x - mousePosition.x > -dots.d_radius &&
-          this.y - mousePosition.y > -dots.d_radius
+          this.x - otherDot.x < dots.distance
+          && this.y - otherDot.y < dots.distance
+          && this.x - otherDot.x > -dots.distance
+          && this.y - otherDot.y > -dots.distance
+          && this.x - mousePosition.x < dots.d_radius
+          && this.y - mousePosition.y < dots.d_radius
+          && this.x - mousePosition.x > -dots.d_radius
+          && this.y - mousePosition.y > -dots.d_radius
         ) {
           context.beginPath();
           context.moveTo(this.x, this.y);
           context.lineTo(otherDot.x, otherDot.y);
 
           // make the fill colour fade out the further you are from the mouse
-          const dotDistance = ((this.x - mousePosition.x) ** 2 +
-            (this.y - mousePosition.y) ** 2) **
-            0.5;
+          const dotDistance = ((this.x - mousePosition.x) ** 2
+            + (this.y - mousePosition.y) ** 2)
+            ** 0.5;
           let distanceRatio = dotDistance / dots.d_radius;
 
           // make it so it doesnt fade out completely
@@ -143,7 +143,7 @@ const canvasDots = function () {
     }
   }
 
-  for (let i = 0; i < dots.nb; i++) {
+  for (let i = 0; i < dots.nb; i += 1) {
     dots.array.push(new Dot());
   }
 
@@ -172,9 +172,9 @@ const canvasDots = function () {
     } catch {
       // Catch Mouse off screen on refresh issue
     }
-  };
+  }
 
-  window.addEventListener('mousemove', mouseMoveHandler); 
+  window.addEventListener('mousemove', mouseMoveHandler);
 
   mousePosition.x = window.innerWidth / 2;
   mousePosition.y = window.innerHeight / 2;

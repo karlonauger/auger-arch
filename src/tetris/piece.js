@@ -36,31 +36,28 @@ class Piece {
       [0, 0, 0],
     ],
   };
+
   static pieceKeys = Object.keys(Piece.pieceMap);
 
-  constructor(x = 0, type) {
-    if(!type) { // Pick a random piece
-      type = Piece.pieceKeys[Math.floor(Math.random() * Piece.pieceKeys.length)]
-    }
-
+  constructor(x = 0, type = Piece.pieceKeys[Math.floor(Math.random() * Piece.pieceKeys.length)]) {
     // Pass by reference
     this.matrix = JSON.parse(JSON.stringify(Piece.pieceMap[type]));
 
     this.pos = {
       x: x - Math.floor(this.matrix[0].length / 2),
-      y: 0
+      y: 0,
     };
   }
 
   rotateMatrix(dir) {
-    for (let y = 0; y < this.matrix.length; ++y) {
-      for (let x = 0; x < y; ++x) {
+    for (let y = 0; y < this.matrix.length; y += 1) {
+      for (let x = 0; x < y; x += 1) {
         [this.matrix[x][y], this.matrix[y][x]] = [this.matrix[y][x], this.matrix[x][y]];
       }
     }
 
     if (dir > 0) {
-      this.matrix.forEach(row => row.reverse());
+      this.matrix.forEach((row) => row.reverse());
     } else {
       this.matrix.reverse();
     }
@@ -69,11 +66,11 @@ class Piece {
   collide(arena) {
     const m = this.matrix;
     const o = this.pos;
-    for (let y = 0; y < m.length; ++y) {
-      for (let x = 0; x < m[y].length; ++x) {
+    for (let y = 0; y < m.length; y += 1) {
+      for (let x = 0; x < m[y].length; x += 1) {
         if (
-          m[y][x] !== 0 &&
-          (arena[y + o.y] && arena[y + o.y][x + o.x]) !== 0
+          m[y][x] !== 0
+          && (arena[y + o.y] && arena[y + o.y][x + o.x]) !== 0
         ) {
           return true;
         }
@@ -105,4 +102,4 @@ class Piece {
   }
 }
 
-export default Piece
+export default Piece;

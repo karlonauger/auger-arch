@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 
-import canvas from './canvas.js';
+import canvas from './canvas';
 
 function DotCanvas() {
   useEffect(() => {
@@ -9,7 +9,7 @@ function DotCanvas() {
 
   return (
     <div className="canvas">
-      <canvas className="connecting-dots" style={ { display: 'block' } } />
+      <canvas className="connecting-dots" style={{ display: 'block' }} />
     </div>
   );
 }

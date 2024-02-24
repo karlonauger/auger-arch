@@ -1,6 +1,6 @@
 import React from 'react';
 
-const About = () => {
+function About() {
   return (
     <div id="about" className="jumbotron">
       <div className="position-relative container my-5">
@@ -13,12 +13,12 @@ const About = () => {
                 className="img-fluid rounded-5"
                 style={{ maxHeight: '150px' }}
               />
-              <hr className="my-3"/>
+              <hr className="my-3" />
               <p className="mx-auto fs-5 text-muted">
-                Detail-oriented Developer with a background in architecting and implementing 
+                Detail-oriented Developer with a background in architecting and implementing
                 innovative solutions. Delivering high-quality software, automating complex
                 processes, and contributing to dynamic engineering team growth. My philosophy is to
-                identify promenant design patters such as pipelines, frameworks, and dev tools to 
+                identify promenant design patters such as pipelines, frameworks, and dev tools to
                 drive efficiency and product quality.
               </p>
               <div className="d-inline-flex">
@@ -27,8 +27,7 @@ const About = () => {
                   href="/KarlonAugerResume.pdf"
                   // download="KarlonAugerResume.pdf"
                   role="button"
-                  tarket="_blank"
-                  rel="noopener noreferrer"
+                  target="_blank"
                 >
                   Resume
                 </a>
@@ -71,12 +70,15 @@ const About = () => {
                 className="img-fluid"
                 style={{ maxHeight: '130px' }}
               />
-              <div className="" style={{
-                display: 'inline-block',
-                verticalAlign: 'middle',
-                height: '150px',
-                width: '120px'
-              }}>
+              <div
+                className=""
+                style={{
+                  display: 'inline-block',
+                  verticalAlign: 'middle',
+                  height: '150px',
+                  width: '120px',
+                }}
+              >
                 <img
                   src="docker.png"
                   alt="Docker"
@@ -114,6 +116,6 @@ const About = () => {
       </div>
     </div>
   );
-};
+}
 
 export default About;

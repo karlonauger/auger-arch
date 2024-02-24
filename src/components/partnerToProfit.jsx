@@ -1,6 +1,6 @@
 import React from 'react';
 
-const PartnerToProfit = () => {
+function PartnerToProfit() {
   return (
     <div id="profit" className="jumbotron">
       <div className="position-relative container my-5">
@@ -29,14 +29,18 @@ const PartnerToProfit = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   role="button"
-                >Visit Website</a>
+                >
+                  Visit Website
+                </a>
                 <a
                   className="btn btn-secondary btn-lg"
                   href="https://app.partnertoprofit.biz/home.php"
                   target="_blank"
                   rel="noopener noreferrer"
                   role="button"
-                >Visit App</a>
+                >
+                  Visit App
+                </a>
               </div>
             </div>
           </div>
@@ -44,6 +48,6 @@ const PartnerToProfit = () => {
       </div>
     </div>
   );
-};
+}
 
 export default PartnerToProfit;

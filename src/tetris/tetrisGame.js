@@ -1,3 +1,4 @@
+import { loadImage, createMatrix } from './helpers';
 import Piece from './piece';
 
 class TetrisGame {
@@ -14,29 +15,29 @@ class TetrisGame {
     this.blocks = [];
 
     this.menuArena = [
-      [0,0,0,0,0,0,0,0,0,0,0,0],
-      [0,7,7,7,0,0,0,0,0,0,0,0],
-      [0,0,7,4,4,0,0,0,0,1,1,0],
-      [0,0,7,4,3,3,3,2,0,1,0,0],
-      [0,0,7,4,4,3,5,5,0,1,1,0],
-      [0,0,7,4,0,3,5,2,0,0,1,0],
-      [0,0,0,4,4,3,5,2,0,1,1,0],
-      [0,0,0,0,0,3,5,2,0,0,0,0],
-      [0,0,0,0,0,0,5,0,0,0,0,0],
-      [1,0,0,0,0,0,0,0,0,0,0,0],
-      [1,0,0,0,0,0,0,0,0,0,0,0],
-      [1,0,0,0,0,0,0,0,0,0,0,0],
-      [1,0,0,0,0,0,0,0,0,0,0,3],
-      [4,4,0,0,0,0,0,0,0,0,0,3],
-      [4,4,0,0,0,0,0,0,0,0,3,3],
-      [3,3,3,0,0,0,0,0,0,0,6,6],
-      [5,5,3,0,0,0,0,0,0,6,6,1],
-      [2,5,5,4,4,0,0,0,4,4,0,1],
-      [2,5,5,4,4,7,0,0,4,4,2,1],
-      [2,2,5,5,7,7,7,0,2,2,2,1]
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 7, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 7, 4, 4, 0, 0, 0, 0, 1, 1, 0],
+      [0, 0, 7, 4, 3, 3, 3, 2, 0, 1, 0, 0],
+      [0, 0, 7, 4, 4, 3, 5, 5, 0, 1, 1, 0],
+      [0, 0, 7, 4, 0, 3, 5, 2, 0, 0, 1, 0],
+      [0, 0, 0, 4, 4, 3, 5, 2, 0, 1, 1, 0],
+      [0, 0, 0, 0, 0, 3, 5, 2, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3],
+      [4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3],
+      [4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3],
+      [3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 6, 6],
+      [5, 5, 3, 0, 0, 0, 0, 0, 0, 6, 6, 1],
+      [2, 5, 5, 4, 4, 0, 0, 0, 4, 4, 0, 1],
+      [2, 5, 5, 4, 4, 7, 0, 0, 4, 4, 2, 1],
+      [2, 2, 5, 5, 7, 7, 7, 0, 2, 2, 2, 1],
     ];
 
-    this.arena = this.createMatrix(12, 20);
+    this.arena = createMatrix(12, 20);
     this.score = 0;
     this.lines = 0;
     this.level = 1;
@@ -53,17 +54,10 @@ class TetrisGame {
     this.nextContext.scale(20, 20);
 
     this.dropCounter = 0;
-    this.dropInterval = 1000;
     this.lastTime = 0;
 
     this.gameOverCB = gameOverCB; // Callback to post score
     this.handleKeyDown = this.handleKeyDown.bind(this);
-  }
-
-  createMatrix(w, h) {
-    const matrix = [];
-    while (h--) { matrix.push(new Array(w).fill(0)); }
-    return matrix;
   }
 
   init() {
@@ -79,33 +73,23 @@ class TetrisGame {
   }
 
   loadBlocks() {
-    const imagePromises = this.blockNames.map((blockName, index) => {
-      return this.loadImage(`/tetris/${blockName}.png`).then((image) => {
+    const imagePromises = this.blockNames
+      .map((blockName, index) => loadImage(`/tetris/${blockName}.png`).then((image) => {
         this.blocks[index] = image;
-      });
-    });
+      }));
 
     return Promise.all(imagePromises);
-  }
-
-  loadImage(src) {
-    return new Promise((resolve, reject) => {
-      const image = new Image();
-      image.onload = () => resolve(image);
-      image.onerror = (error) => reject(error);
-      image.src = src;
-    });
   }
 
   startGame(player) {
     document.addEventListener('keydown', this.handleKeyDown);
     this.player = player;
-    
+
     this.restartGame();
   }
 
   restartGame() {
-    this.arena.forEach(row => row.fill(0));
+    this.arena.forEach((row) => row.fill(0));
     this.score = 0;
     this.lines = 0;
     this.level = 0;
@@ -141,27 +125,25 @@ class TetrisGame {
   }
 
   drop(player) {
-    this.piece.pos.y++;
+    this.piece.pos.y += 1;
     if (this.piece.collide(this.arena)) {
-      this.piece.pos.y--;
-      this.merge(this.arena, this.piece);
+      this.piece.pos.y -= 1;
+      this.merge();
       this.reset();
       this.arenaSweep();
       this.updateStats();
-    } else {
-      if (player) {
-        this.score++;
-        this.updateStats();
-      }
+    } else if (player) {
+      this.score += 1;
+      this.updateStats();
     }
     this.dropCounter = 0;
   }
 
-  merge(arena, piece) {
-    piece.matrix.forEach((row, y) => {
+  merge() {
+    this.piece.matrix.forEach((row, y) => {
       row.forEach((value, x) => {
         if (value !== 0) {
-          arena[y + piece.pos.y][x + piece.pos.x] = value;
+          this.arena[y + this.piece.pos.y][x + this.piece.pos.x] = value;
         }
       });
     });
@@ -178,38 +160,43 @@ class TetrisGame {
     }
   }
 
-  calculateDropInterval(level) {
+  dropInterval() {
     // second data for each level
     const secondsToBottom = [
-      15.974, 14.310, 12.646, 10.982, 9.318, 7.654, 5.990, 4.326, 2.662, 1.997, 1.664, 1.664,1.664,
+      15.974, 14.310, 12.646, 10.982, 9.318, 7.654, 5.990, 4.326, 2.662, 1.997, 1.664, 1.664, 1.664,
       1.331, 1.331, 1.331, 0.998, 0.998, 0.998, 0.666, 0.666, 0.666, 0.666, 0.666, 0.666, 0.666,
-      0.666, 0.666, 0.666, 0.333
+      0.666, 0.666, 0.666, 0.333,
     ];
     const cellsToBottom = 20;
-  
-    return (secondsToBottom[level] / cellsToBottom) * 1000;
+
+    return (secondsToBottom[this.level] / cellsToBottom) * 1000;
   }
 
   arenaSweep() {
-    let scoreMultiplier = [0, 40, 100, 300, 1200];
+    const scoreMultiplier = [0, 40, 100, 300, 1200];
     let rowCount = 0;
-    outer: for (let y = this.arena.length - 1; y > 0; --y) {
-      for (let x = 0; x < this.arena[y].length; ++x) {
+
+    for (let y = this.arena.length - 1; y > 0; y -= 1) {
+      let rowComplete = true;
+
+      for (let x = 0; x < this.arena[y].length; x += 1) {
         if (this.arena[y][x] === 0) {
-          continue outer;
+          rowComplete = false;
+          break;
         }
       }
 
-      const row = this.arena.splice(y, 1)[0].fill(0);
-      this.arena.unshift(row);
-      ++y;
-
-      rowCount++;
+      if (rowComplete) {
+        const row = this.arena.splice(y, 1)[0].fill(0);
+        this.arena.unshift(row);
+        rowCount += 1;
+        y += 1;
+      }
     }
+
     this.score += scoreMultiplier[rowCount] * (this.level + 1);
     this.lines += rowCount;
     this.level = Math.floor(this.lines / 10);
-    this.dropInterval = this.calculateDropInterval(this.level);
   }
 
   handleKeyDown(event) {
@@ -219,15 +206,15 @@ class TetrisGame {
         break;
       case 'ArrowRight':
         this.piece.move(this.arena, 1);
-        break; 
+        break;
       case 'ArrowDown':
         event.preventDefault();
         this.drop(true);
         break;
       case ' ': // Spacebar
         event.preventDefault();
-        this.currentPiece = this.piece
-        while(this.piece === this.currentPiece) {
+        this.currentPiece = this.piece;
+        while (this.piece === this.currentPiece) {
           this.drop(true);
         }
         break;
@@ -250,7 +237,7 @@ class TetrisGame {
     const deltaTime = time - this.lastTime;
 
     this.dropCounter += deltaTime;
-    if (this.dropCounter > this.dropInterval) {
+    if (this.dropCounter > this.dropInterval()) {
       this.drop(false);
     }
 
@@ -261,7 +248,7 @@ class TetrisGame {
     if (this.gameOver) {
       this.gameOverCB(this.player, this.score, this.level);
     } else {
-      requestAnimationFrame(this.update.bind(this)); 
+      requestAnimationFrame(this.update.bind(this));
     }
   }
 }

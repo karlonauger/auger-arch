@@ -1,30 +1,43 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
-const Score = (props) => (
-  <tr>
-    <td>{props.score.userDetails.username}</td>
-    <td>{props.score.score}</td>
-    <td>{props.score.level}</td>
-  </tr>
-);
+import PropTypes from 'prop-types';
 
-const TopScores = ({ onScoreUpdate }) => {
+function Score({ score }) {
+  return (
+    <tr>
+      <td>{score.userDetails.username}</td>
+      <td>{score.score}</td>
+      <td>{score.level}</td>
+    </tr>
+  );
+}
+Score.propTypes = {
+  score: PropTypes.shape({
+    userDetails: PropTypes.shape({
+      username: PropTypes.string.isRequired,
+    }),
+    score: PropTypes.number.isRequired,
+    level: PropTypes.number.isRequired,
+  }).isRequired,
+};
+
+function TopScores({ onScoreUpdate }) {
   const [scores, setTopScores] = useState([]);
-  // This method fetches the records from the database.
+
   useEffect(() => {
     async function getTopScores() {
-      const response = await fetch(`http://localhost:5000/top-scores?limit=8`);
-      
+      const response = await fetch('http://localhost:5000/top-scores?limit=8');
+
       if (!response.ok) {
         console.log(`An error occurred: ${response.statusText}`);
         return;
       }
-      
-      const scores = await response.json();
+
+      const rawScores = await response.json();
 
       // Fetch user details for each score
       const scoresWithUserDetails = await Promise.all(
-        scores.map(async (score) => {
+        rawScores.map(async (score) => {
           const userResponse = await fetch(`http://localhost:5000/user/${score.user}`);
           if (!userResponse.ok) {
             throw new Error('Failed to fetch user details');
@@ -32,25 +45,21 @@ const TopScores = ({ onScoreUpdate }) => {
 
           const userData = await userResponse.json();
           return { ...score, userDetails: userData };
-        })
+        }),
       );
-      
+
       setTopScores(scoresWithUserDetails);
     }
     getTopScores();
-    return;
   }, [onScoreUpdate]);
 
-  // This method will map out the records on the table
-  function TopScores() {
-    return scores.map((score) => {
-      return (
-        <Score score={score} key={score._id}/>
-      );
-    });
+  function topScores() {
+    return scores.map((score) => (
+      // eslint-disable-next-line no-underscore-dangle
+      <Score score={score} key={score._id} />
+    ));
   }
 
-  // This following section will display the table with the records of individuals.
   return (
     <div className="position-relative">
       <table className="table table-striped text-start">
@@ -61,10 +70,13 @@ const TopScores = ({ onScoreUpdate }) => {
             <th>Level</th>
           </tr>
         </thead>
-        <tbody>{TopScores()}</tbody>
+        <tbody>{topScores()}</tbody>
       </table>
     </div>
   );
+}
+TopScores.propTypes = {
+  onScoreUpdate: PropTypes.number.isRequired,
 };
 
 export default TopScores;

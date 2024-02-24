@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 export default function Title() {
   return (
@@ -7,8 +7,8 @@ export default function Title() {
       style={{ height: '100vh', display: 'flex', alignItems: 'center' }}
     >
       <div className="col-md-8 p-lg-5 mx-auto my-5">
-        <h1 className="display-3 fw-bold">Hello, I'm Karlon</h1>
-        <h2 className="fw-normal text-muted">I'm a full stack web developer</h2>
+        <h1 className="display-3 fw-bold">Hello, I&apos;m Karlon</h1>
+        <h2 className="fw-normal text-muted">I&apos;m a full stack web developer</h2>
         <div className="nav d-flex justify-content-center lead fw-normal">
           <a className="nav-link" href="#about">Learn more</a>
         </div>
