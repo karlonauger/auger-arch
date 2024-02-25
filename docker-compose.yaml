@@ -1,0 +1,39 @@
+version: '3'
+services:
+  # React app
+  client:
+    build:
+      context: ./auger-arch-client
+    container_name: react-ui
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server
+    networks:
+      - auger-arch-network
+
+  # Node.js server
+  server:
+    build:
+      context: ./auger-arch-server
+    container_name: node-api
+    restart: always
+    ports:
+      - "5000:5000"
+    depends_on:
+      - database
+    networks:
+      - auger-arch-network
+
+  # MongoDB
+  database:
+    image: "mongo:latest"
+    container_name: mongo-db
+    ports:
+      - "27017:27017"
+    networks:
+      - auger-arch-network
+
+networks:
+  auger-arch-network:
+    driver: bridge
