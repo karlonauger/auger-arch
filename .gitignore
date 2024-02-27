@@ -8,8 +8,11 @@ node_modules
 *.tfstate.backup
 .terraform/
 
-# misc
+# Contains Secret Mongo URI
+kubernetes/variables.tf
 config.env
+
+# misc
 .DS_Store
 .env.local
 .env.development.local

@@ -26,7 +26,7 @@ function TopScores({ onScoreUpdate }) {
 
   useEffect(() => {
     async function getTopScores() {
-      const response = await fetch('http://localhost:5000/top-scores?limit=8');
+      const response = await fetch(`/api/top-scores?limit=8`);
 
       if (!response.ok) {
         console.log(`An error occurred: ${response.statusText}`);
@@ -38,7 +38,7 @@ function TopScores({ onScoreUpdate }) {
       // Fetch user details for each score
       const scoresWithUserDetails = await Promise.all(
         rawScores.map(async (score) => {
-          const userResponse = await fetch(`http://localhost:5000/user/${score.user}`);
+          const userResponse = await fetch(`/api/user/${score.user}`);
           if (!userResponse.ok) {
             throw new Error('Failed to fetch user details');
           }

@@ -13,7 +13,7 @@ function Tetris() {
   const findOrCreatePlayer = async (name) => {
     try {
       // Find or create user
-      const response = await fetch(`http://localhost:5000/find-or-create-user/${name}`, {
+      const response = await fetch(`/api/find-or-create-user/${name}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -34,7 +34,7 @@ function Tetris() {
 
   const postScore = async (player, score, level) => {
     try {
-      const scoreResponse = await fetch('http://localhost:5000/add-score', {
+      const scoreResponse = await fetch(`/api/add-score`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

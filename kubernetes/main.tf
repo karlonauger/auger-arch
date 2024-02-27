@@ -30,23 +30,19 @@ resource "kubernetes_deployment" "nginx" {
       App = "AugerArchClient"
     }
   }
-
   spec {
     replicas = 1
-
     selector {
       match_labels = {
         App = "AugerArchClient"
       }
     }
-
     template {
       metadata {
         labels = {
           App = "AugerArchClient"
         }
       }
-
       spec {
         container {
           name  = "auger-arch-client"
@@ -60,19 +56,68 @@ resource "kubernetes_deployment" "nginx" {
 # LoadBalancer, which routes traffic from the external load balancer to pods with the matching selector.
 resource "kubernetes_service" "nginx" {
   metadata {
-    name = "auger-arch"
+    name = "auger-arch-client"
   }
-
   spec {
     selector = {
       App = kubernetes_deployment.nginx.spec.0.template.0.metadata[0].labels.App
     }
-
     port {
       port        = 80
       target_port = 80
     }
+    type = "LoadBalancer"
+  }
+}
 
+# Schedule the Backend Server deployment
+resource "kubernetes_deployment" "server" {
+  metadata {
+    name = "auger-arch-server"
+    labels = {
+      App = "AugerArchServer"
+    }
+  }
+  spec {
+    replicas = 1
+    selector {
+      match_labels = {
+        App = "AugerArchServer"
+      }
+    }
+    template {
+      metadata {
+        labels = {
+          App = "AugerArchServer"
+        }
+      }
+      spec {
+        container {
+          name  = "auger-arch-server"
+          image = "992382708286.dkr.ecr.us-east-1.amazonaws.com/auger-arch/server:latest"
+          env {
+            name = "ATLAS_URI"
+            value = var.atlas_uri
+          }
+        }
+      }
+    }
+  }
+}
+
+# LoadBalancer, which routes traffic from the front end pods with the matching selector.
+resource "kubernetes_service" "server" {
+  metadata {
+    name = "auger-arch-server"
+  }
+  spec {
+    selector = {
+      App = kubernetes_deployment.server.spec.0.template.0.metadata[0].labels.App
+    }
+    port {
+      port        = 8000
+      target_port = 5000
+    }
     type = "LoadBalancer"
   }
 }
