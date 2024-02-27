@@ -3,12 +3,10 @@ node_modules
 /.pnp
 .pnp.js
 
-# testing
-/coverage
-
-logs
-# production
-/build
+# Terraform
+*.tfstate
+*.tfstate.backup
+.terraform/
 
 # misc
 config.env

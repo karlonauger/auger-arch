@@ -1,10 +1,15 @@
-# Getting Started with Create React App
+# Client side - React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is the Client side for AugerArchitecture
 
 ## Available Scripts
 
 In the project directory, you can run:
+
+### `bash deploy.sh`
+
+Build and push docker image to AWS ECR
+Restart EKS auger-arch-client deployment
 
 ### `npm start`
 

@@ -1,20 +1,41 @@
-# Use an official Node runtime as a base image
-FROM node:14-alpine
+###########
+# BUILDER #
+###########
 
-# Set the working directory in the container
+# pull official base image
+FROM node:16.5.0-alpine as builder
+
+# set working directory
 WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json to the working directory
-COPY package*.json ./
+# add `usr/src/app/node_modules/.bin` to $PATH
+ENV PATH /usr/src/app/node_modules/.bin:$PATH
 
-# Install app dependencies
-RUN npm install
+# install and cache app dependencies
+COPY package.json .
+COPY package-lock.json .
+RUN npm ci
 
-# Copy the rest of the application code
+# create build
 COPY . .
+RUN npm run build
 
-# Expose the port the app runs on
-EXPOSE 3000
+#########
+# FINAL #
+#########
 
-# Define the command to run the application
-CMD ["npm", "start"]
+# base image
+FROM nginx:1.19.4-alpine
+
+# update nginx conf
+RUN rm -rf /etc/nginx/conf.d
+COPY conf /etc/nginx
+
+# copy static files
+COPY --from=builder /usr/src/app/build /usr/share/nginx/html
+
+# expose port
+EXPOSE 80
+
+# run nginx
+CMD ["nginx", "-g", "daemon off;"]
