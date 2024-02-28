@@ -70,6 +70,24 @@ resource "kubernetes_service" "nginx" {
   }
 }
 
+# Domain Routing
+
+data "aws_route53_zone" "auger_arch_zone" {
+  name = "auger-architecture.com"
+}
+
+resource "aws_route53_record" "load_balancer_alias" {
+  zone_id = data.aws_route53_zone.auger_arch_zone.zone_id
+  name    = "auger-architecture.com"
+  type    = "A"
+
+  alias {
+    name                   = kubernetes_service.nginx.status.0.load_balancer.0.ingress.0.hostname
+    zone_id                = "Z35SXDOTRQ7X7K" // TODO Pull from Load Balancer or ommit if possible
+    evaluate_target_health = true
+  }
+}
+
 # Schedule the Backend Server deployment
 resource "kubernetes_deployment" "server" {
   metadata {
