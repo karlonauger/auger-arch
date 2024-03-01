@@ -18,7 +18,7 @@ function About() {
                 Detail-oriented Developer with a background in architecting and implementing
                 innovative solutions. Delivering high-quality software, automating complex
                 processes, and contributing to dynamic engineering team growth. My philosophy is to
-                identify promenant design patters such as pipelines, frameworks, and dev tools to
+                identify promenant design patterns such as pipelines, frameworks, and dev tools to
                 drive efficiency and product quality.
               </p>
               <div className="d-inline-flex">
