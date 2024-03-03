@@ -1,5 +1,7 @@
 import React from 'react';
 
+import Socials from './socials';
+
 function About() {
   return (
     <div id="about" className="jumbotron">
@@ -18,12 +20,12 @@ function About() {
                 Detail-oriented Developer with a background in architecting and implementing
                 innovative solutions. Delivering high-quality software, automating complex
                 processes, and contributing to dynamic engineering team growth. My philosophy is to
-                identify promenant design patterns such as pipelines, frameworks, and dev tools to
+                identify prominent design patterns such as pipelines, frameworks, and dev tools to
                 drive efficiency and product quality.
               </p>
-              <div className="d-inline-flex">
+              <div className="d-inline-flex mb-3">
                 <a
-                  className="btn btn-primary btn-lg mb-3"
+                  className="btn btn-primary btn-lg"
                   href="/KarlonAugerResume.pdf"
                   // download="KarlonAugerResume.pdf"
                   role="button"
@@ -31,6 +33,7 @@ function About() {
                 >
                   Resume
                 </a>
+                <Socials size={"32"} />
               </div>
             </div>
             <div className="col-md-6">
