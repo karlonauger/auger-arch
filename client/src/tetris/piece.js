@@ -1,4 +1,8 @@
-class Piece {
+/**
+ * Piece class represents Tetris pieces and their propertie.
+ */
+export default class Piece {
+  // Static piece map defining Tetris piece shapes
   static pieceMap = {
     I: [
       [0, 1, 0, 0],
@@ -37,18 +41,25 @@ class Piece {
     ],
   };
 
+  // Array of piece keys for random selection
   static pieceKeys = Object.keys(Piece.pieceMap);
 
+  // Constructor to initialize a Tetris piece
   constructor(x = 0, type = Piece.pieceKeys[Math.floor(Math.random() * Piece.pieceKeys.length)]) {
-    // Pass by reference
+    // Pass by reference to avoid modifying original piece map
     this.matrix = JSON.parse(JSON.stringify(Piece.pieceMap[type]));
 
+    // Initial position of the piece
     this.pos = {
       x: x - Math.floor(this.matrix[0].length / 2),
       y: 0,
     };
   }
 
+  /** 
+   * Rotate the piece in a direction
+   * @param {dir} num - Positive rotaes clockwise, otherwise counter clockwise
+   */
   rotateMatrix(dir) {
     for (let y = 0; y < this.matrix.length; y += 1) {
       for (let x = 0; x < y; x += 1) {
@@ -63,6 +74,11 @@ class Piece {
     }
   }
 
+  /** 
+   * Check if the piece collides with the game arena
+   * @param {Array} arena - 2D array representing the game arena.
+   * @returns {boolean} - True if there is a collision, false otherwise.
+   */
   collide(arena) {
     const m = this.matrix;
     const o = this.pos;
@@ -79,6 +95,11 @@ class Piece {
     return false;
   }
 
+  /** 
+   * Move the piece within the game arena.
+   * @param {Array} arena - 2D array representing the game arena.
+   * @param {number} offset - The amount to move the piece horizontally.
+   */
   move(arena, offset) {
     this.pos.x += offset;
     if (this.collide(arena)) {
@@ -86,6 +107,11 @@ class Piece {
     }
   }
 
+  /** 
+   * Rotate the piece within the game arena. If there is room in the game arena.
+   * @param {Array} arena - 2D array representing the game arena.
+   * @param {number} dir - Positive rotates clockwise, otherwise counter-clockwise.
+   */
   rotate(arena, dir) {
     const pos = this.pos.x;
     let offset = 1;
@@ -101,5 +127,3 @@ class Piece {
     }
   }
 }
-
-export default Piece;

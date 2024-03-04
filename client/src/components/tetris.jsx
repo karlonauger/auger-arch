@@ -128,8 +128,8 @@ export default function Tetris() {
               <div
                 id="game-menu"
                 className={
-                `position-absolute top-50 start-50 translate-middle ${gameStarted ? 'd-none' : ''}`
-              }
+                  `position-absolute top-50 start-50 translate-middle ${gameStarted ? 'd-none' : ''}`
+                }
                 style={{ marginTop: '40px' }}
               >
                 <form>
@@ -147,11 +147,7 @@ export default function Tetris() {
                       />
                     </label>
                   </div>
-                  <button
-                    id="startButton"
-                    type="button"
-                    className="btn btn-primary"
-                  >
+                  <button id="startButton" type="button" className="btn btn-primary">
                     Start
                   </button>
                 </form>
@@ -164,11 +160,7 @@ export default function Tetris() {
               >
                 <form>
                   <h4 className="text-danger">GAME OVER</h4>
-                  <button
-                    id="restartButton"
-                    type="button"
-                    className="btn btn-primary"
-                  >
+                  <button id="restartButton" type="button" className="btn btn-primary">
                     Restart
                   </button>
                 </form>
@@ -178,38 +170,47 @@ export default function Tetris() {
               <div id="game-stats" className={!gameStarted ? 'd-none' : ''}>
                 <h5>Next Piece</h5>
                 <canvas id="nextPieceCanvas" width="80" height="80" />
-                <h5>
-                  Player:
-                  <span id="player">{playerName}</span>
-                </h5>
-                <h5>
-                  Score:
-                  <span id="score">0</span>
-                </h5>
-                <h5>
-                  Level:
-                  <span id="level">0</span>
-                </h5>
-                <h5>
-                  Lines:
-                  <span id="lines">0</span>
-                </h5>
+                <h5>Player: <span id="player">{playerName}</span></h5>
+                <h5>Score: <span id="score">0</span></h5>
+                <h5>Level: <span id="level">0</span></h5>
+                <h5>Lines: <span id="lines">0</span></h5>
               </div>
               <div id="game-controls" className={gameStarted ? 'd-none' : ''}>
                 <h5>Controls</h5>
                 <p>
-                  Rotate Clockwise - Z Key / Up Arrow
-                  <br />
-                  Rotate Couter Clockwise - X Key
-                  <br />
-                  Move Left - Left Arrow
-                  <br />
-                  Move Right - Right Arrow
-                  <br />
-                  Soft Drop - Down Arrow
-                  <br />
+                  Rotate Clockwise - Z Key / Up Arrow<br />
+                  Rotate Couter Clockwise - X Key<br />
+                  Move Left - Left Arrow<br />
+                  Move Right - Right Arrow<br />
+                  Soft Drop - Down Arrow<br />
                   Hard Drop - Space Bar
                 </p>
+              </div>
+              <hr className="my-4" />
+              <p className="mx-auto text-muted">
+                A JavaScript remake of the classic Tetris game. Scores are recorded by a Node.js
+                server in a MongoDB. I wanted to include the Java version I made in High School, but
+                browser support for Java is limmited. Please enjoy :)
+              </p>
+              <div className="d-inline-flex gap-2 mb-3">
+                <a
+                  className="btn btn-primary"
+                  href="https://github.com/karlonauger/auger-arch/tree/master/client/src/tetris"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  role="button"
+                >
+                  JS Code
+                </a>
+                <a
+                  className="btn btn-primary"
+                  href="https://github.com/karlonauger/tetris"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  role="button"
+                >
+                  Java Code
+                </a>
               </div>
             </div>
             <div className="col-md-4">

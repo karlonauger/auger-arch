@@ -1,8 +1,18 @@
 import { loadImage, createMatrix } from './helpers';
 import Piece from './piece';
 
-class TetrisGame {
+/**
+ * TetrisGame class represents the core logic and functionality of a Tetris game.
+ */
+export default class TetrisGame {
+  /**
+   * Constructor for creating a TetrisGame instance.
+   * @param {string} canvasId - The ID of the main canvas element.
+   * @param {string} nextCanvasId - The ID of the canvas element for displaying the next Tetris piece.
+   * @param {function} gameOverCB - Callback function invoked when the game is over.
+   */
   constructor(canvasId, nextCanvasId, gameOverCB) {
+    // Array of block names for loading Tetris block images.
     this.blockNames = [
       'Red',
       'Green',
@@ -12,8 +22,10 @@ class TetrisGame {
       'Orange',
       'LightBlue',
     ];
+    // Array to store loaded block images.
     this.blocks = [];
-
+    
+    // Menu arena configuration for displaying the start screen.
     this.menuArena = [
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 7, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -37,6 +49,7 @@ class TetrisGame {
       [2, 2, 5, 5, 7, 7, 7, 0, 2, 2, 2, 1],
     ];
 
+    // Game state valiables
     this.arena = createMatrix(12, 20);
     this.score = 0;
     this.lines = 0;
@@ -45,21 +58,29 @@ class TetrisGame {
     this.nextPiece = null;
     this.piece = null;
 
-    this.canvas = document.getElementById(canvasId);
-    this.context = this.canvas.getContext('2d');
-    this.context.scale(20, 20);
-
-    this.nextCanvas = document.getElementById(nextCanvasId);
-    this.nextContext = this.nextCanvas.getContext('2d');
-    this.nextContext.scale(20, 20);
-
+    // Game loop variables
     this.dropCounter = 0;
     this.lastTime = 0;
 
-    this.gameOverCB = gameOverCB; // Callback to post score
+    // Canvas component for the game
+    this.canvas = document.getElementById(canvasId);
+    this.context = this.canvas.getContext('2d');
+    this.context.scale(20, 20); // 1 = block width
+
+    // Canvas component for displaying the next piece
+    this.nextCanvas = document.getElementById(nextCanvasId);
+    this.nextContext = this.nextCanvas.getContext('2d');
+    this.nextContext.scale(20, 20); // 1 = block width
+
+    // Callback invoked when the game is over. Used to post score.
+    this.gameOverCB = gameOverCB;
+
     this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
+  /**
+   * Initialize the Tetris game, load block images, and display the menu.
+   */
   init() {
     this.reset();
 
@@ -72,6 +93,10 @@ class TetrisGame {
     });
   }
 
+  /**
+   * Load Tetris block images and return a Promise that resolves when all images are loaded.
+   * @returns {Promise} - Promise that resolves when all block images are loaded.
+   */
   loadBlocks() {
     const imagePromises = this.blockNames
       .map((blockName, index) => loadImage(`/tetris/${blockName}.png`).then((image) => {
@@ -81,6 +106,10 @@ class TetrisGame {
     return Promise.all(imagePromises);
   }
 
+  /**
+   * Start the Tetris game for a given player.
+   * @param {player} string - Player's name. To be passed back with score for saving
+   */
   startGame(player) {
     document.addEventListener('keydown', this.handleKeyDown);
     this.player = player;
@@ -88,6 +117,9 @@ class TetrisGame {
     this.restartGame();
   }
 
+  /**
+   * Restart the Tetris game. Reset game variables. Restart game loop
+   */
   restartGame() {
     this.arena.forEach((row) => row.fill(0));
     this.score = 0;
@@ -98,6 +130,9 @@ class TetrisGame {
     this.update();
   }
 
+  /**
+   * Draw a matrix of blocks represented by their color as a num on a given context and location
+   */
   drawMatrix(context, matrix, offset) {
     matrix.forEach((row, y) => {
       row.forEach((value, x) => {
@@ -108,6 +143,9 @@ class TetrisGame {
     });
   }
 
+  /**
+   * Draw the areana, current piece, and next piece
+   */
   draw() {
     this.context.fillStyle = '#000';
     this.context.fillRect(0, 0, this.canvas.width / 20, this.canvas.height / 20);
@@ -118,12 +156,19 @@ class TetrisGame {
     this.drawMatrix(this.nextContext, this.nextPiece.matrix, { x: 0, y: 0 });
   }
 
+  /**
+   * Update dom state elements
+   */
   updateStats() {
     document.getElementById('score').innerText = this.score;
     document.getElementById('level').innerText = this.level;
     document.getElementById('lines').innerText = this.lines;
   }
 
+  /**
+   * Move the current piece down. Resolve collisions.
+   * @param {player} boolean - If this move was made by the player.
+   */
   drop(player) {
     this.piece.pos.y += 1;
     if (this.piece.collide(this.arena)) {
@@ -139,6 +184,9 @@ class TetrisGame {
     this.dropCounter = 0;
   }
 
+  /**
+   * Add the current Tetris piece into the game board.
+   */
   merge() {
     this.piece.matrix.forEach((row, y) => {
       row.forEach((value, x) => {
@@ -149,6 +197,9 @@ class TetrisGame {
     });
   }
 
+  /**
+   * Add a new piece into play. Create the next piece. Resolve game over condition.
+   */
   reset() {
     const center = this.arena[0].length / 2;
     this.piece = this.nextPiece ? this.nextPiece : new Piece(center);
@@ -160,6 +211,9 @@ class TetrisGame {
     }
   }
 
+  /**
+   * Calculate the drop interval/speed for the piece based on the current level.
+   */
   dropInterval() {
     // second data for each level
     const secondsToBottom = [
@@ -172,6 +226,9 @@ class TetrisGame {
     return (secondsToBottom[this.level] / cellsToBottom) * 1000;
   }
 
+  /**
+   * Clear completed rows and update the game state variables.
+   */
   arenaSweep() {
     const scoreMultiplier = [0, 40, 100, 300, 1200];
     let rowCount = 0;
@@ -199,6 +256,9 @@ class TetrisGame {
     this.level = Math.floor(this.lines / 10);
   }
 
+  /**
+   * Handle key input
+   */
   handleKeyDown(event) {
     switch (event.key) {
       case 'ArrowLeft':
@@ -233,6 +293,10 @@ class TetrisGame {
     }
   }
 
+  /**
+   * Update the game state and trigger the next animation frame.
+   * @param {number} time - Timestamp representing the current time.
+   */
   update(time = 0) {
     const deltaTime = time - this.lastTime;
 
@@ -252,5 +316,3 @@ class TetrisGame {
     }
   }
 }
-
-export default TetrisGame;

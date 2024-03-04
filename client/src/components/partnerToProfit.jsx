@@ -24,7 +24,7 @@ export default function PartnerToProfit() {
               </p>
               <div className="d-inline-flex gap-2">
                 <a
-                  className="btn btn-primary btn-lg mr-5"
+                  className="btn btn-primary btn-lg"
                   href="https://www.partnertoprofit.biz/home.php"
                   target="_blank"
                   rel="noopener noreferrer"
