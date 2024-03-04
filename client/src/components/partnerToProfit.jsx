@@ -1,6 +1,6 @@
 import React from 'react';
 
-function PartnerToProfit() {
+export default function PartnerToProfit() {
   return (
     <div id="profit" className="jumbotron">
       <div className="position-relative container my-5">
@@ -49,5 +49,3 @@ function PartnerToProfit() {
     </div>
   );
 }
-
-export default PartnerToProfit;

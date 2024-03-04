@@ -1,4 +1,4 @@
-const canvasDots = function () {
+export default function canvasDots() {
   const canvas = document.querySelector('canvas');
   const context = canvas.getContext('2d');
 
@@ -194,5 +194,3 @@ const canvasDots = function () {
     window.removeEventListener('mousemove', mouseMoveHandler);
   };
 };
-
-export default canvasDots;

@@ -1,32 +1,18 @@
 import React, { useEffect, useState } from 'react';
-
 import PropTypes from 'prop-types';
 
-function Score({ score }) {
-  return (
-    <tr>
-      <td>{score.userDetails.username}</td>
-      <td>{score.score}</td>
-      <td>{score.level}</td>
-    </tr>
-  );
-}
-Score.propTypes = {
-  score: PropTypes.shape({
-    userDetails: PropTypes.shape({
-      username: PropTypes.string.isRequired,
-    }),
-    score: PropTypes.number.isRequired,
-    level: PropTypes.number.isRequired,
-  }).isRequired,
-};
+import { config } from '../config'
+import Score from './score';
 
-function TopScores({ onScoreUpdate }) {
+export default function TopScores({ onScoreUpdate }) {
   const [scores, setTopScores] = useState([]);
 
   useEffect(() => {
     async function getTopScores() {
-      const response = await fetch(`/api/top-scores?limit=8`);
+      console.log(process.env.REACT_APP_API_ENDPOINT);
+      console.log(process.env.API_ENDPOINT);
+      console.log(config.apiEndpoint);
+      const response = await fetch(`${config.apiEndpoint}/top-scores?limit=8`);
 
       if (!response.ok) {
         console.log(`An error occurred: ${response.statusText}`);
@@ -38,7 +24,7 @@ function TopScores({ onScoreUpdate }) {
       // Fetch user details for each score
       const scoresWithUserDetails = await Promise.all(
         rawScores.map(async (score) => {
-          const userResponse = await fetch(`/api/user/${score.user}`);
+          const userResponse = await fetch(`${config.apiEndpoint}/user/${score.user}`);
           if (!userResponse.ok) {
             throw new Error('Failed to fetch user details');
           }
@@ -78,5 +64,3 @@ function TopScores({ onScoreUpdate }) {
 TopScores.propTypes = {
   onScoreUpdate: PropTypes.number.isRequired,
 };
-
-export default TopScores;

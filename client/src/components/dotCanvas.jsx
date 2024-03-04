@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 
 import canvas from './canvas';
 
-function DotCanvas() {
+export default function DotCanvas() {
   useEffect(() => {
     canvas();
   }, []);
@@ -13,5 +13,3 @@ function DotCanvas() {
     </div>
   );
 }
-
-export default DotCanvas;

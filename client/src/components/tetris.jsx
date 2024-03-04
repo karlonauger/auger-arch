@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 
+import { config } from '../config';
 import TopScores from './topScores';
 import TetrisGame from '../tetris/tetrisGame';
 
-function Tetris() {
+export default function Tetris() {
   const [playerName, setPlayerName] = useState('');
   const [gameStarted, setGameStarted] = useState(false);
   const [gameOverFlag, setGameOverFlag] = useState(false);
@@ -13,7 +14,7 @@ function Tetris() {
   const findOrCreatePlayer = async (name) => {
     try {
       // Find or create user
-      const response = await fetch(`/api/find-or-create-user/${name}`, {
+      const response = await fetch(`${config.apiEndpoint}/find-or-create-user/${name}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -34,7 +35,7 @@ function Tetris() {
 
   const postScore = async (player, score, level) => {
     try {
-      const scoreResponse = await fetch(`/api/add-score`, {
+      const scoreResponse = await fetch(`${config.apiEndpoint}/add-score`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -220,5 +221,3 @@ function Tetris() {
     </div>
   );
 }
-
-export default Tetris;

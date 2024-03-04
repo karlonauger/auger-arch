@@ -2,7 +2,7 @@ import React from 'react';
 
 import Socials from './socials';
 
-function About() {
+export default function About() {
   return (
     <div id="about" className="jumbotron">
       <div className="position-relative container my-5">
@@ -27,7 +27,6 @@ function About() {
                 <a
                   className="btn btn-primary btn-lg"
                   href="/KarlonAugerResume.pdf"
-                  // download="KarlonAugerResume.pdf"
                   role="button"
                   target="_blank"
                 >
@@ -120,5 +119,3 @@ function About() {
     </div>
   );
 }
-
-export default About;
