@@ -15,12 +15,13 @@ export default function PartnerToProfit() {
             </div>
             <div className="col-md-6">
               <h1 className="text-body-emphasis">Partner To Profit</h1>
-              <p className="mx-auto fs-5 text-muted">
-                Fact-based planning, analysis and decision-making for Alliance-Partnerships
+              <p className="mx-auto fs-4 text-muted">
+                Calculated planning, analysis and decision-making for Buisness Partnerships
               </p>
               <hr className="my-4" />
               <p className="mx-auto text-muted">
-                PHP-based SAAS application to model financial outcomes of business partnerships
+                PHP-based SAAS application to model financial outcomes of business partnerships.
+                Promotianal site generated 75+ leads and served over 4k users in the first year.
               </p>
               <div className="d-inline-flex gap-2">
                 <a

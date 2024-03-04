@@ -186,11 +186,11 @@ export default function Tetris() {
                   Hard Drop - Space Bar
                 </p>
               </div>
-              <hr className="my-4" />
+              <hr className="my-2" />
               <p className="mx-auto text-muted">
                 A JavaScript remake of the classic Tetris game. Scores are recorded by a Node.js
                 server in a MongoDB. I wanted to include the Java version I made in High School, but
-                browser support for Java is limmited. Please enjoy :)
+                browser support for Java is limited. Please enjoy :)
               </p>
               <div className="d-inline-flex gap-2 mb-3">
                 <a

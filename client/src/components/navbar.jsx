@@ -18,6 +18,9 @@ export default function Navbar() {
             <li>
               <a className="nav-link" href="#tetris">Tetris</a>
             </li>
+            <li>
+              <a className="nav-link" href="#architecture">Architecture</a>
+            </li>
           </ul>
         </div>
       </div>
