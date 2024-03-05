@@ -9,9 +9,6 @@ export default function TopScores({ onScoreUpdate }) {
 
   useEffect(() => {
     async function getTopScores() {
-      console.log(process.env.REACT_APP_API_ENDPOINT);
-      console.log(process.env.API_ENDPOINT);
-      console.log(config.apiEndpoint);
       const response = await fetch(`${config.apiEndpoint}/top-scores?limit=8`);
 
       if (!response.ok) {
