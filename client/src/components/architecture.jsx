@@ -26,8 +26,10 @@ export default function Architecture() {
     handleResize();
 
     window.addEventListener('resize', handleResize);
+    window.addEventListener('load', handleResize);
     return () => {
       window.removeEventListener('resize', handleResize);
+      window.addEventListener('load', handleResize);
     };
   }, []);
 
@@ -87,8 +89,8 @@ export default function Architecture() {
                     Designs for an automated CodePipeline triggered by a GitHub commit. For
                     a larger project, a test pipeline would initially run and be verified in a test
                     account. There may also be optional manual approval steps. Currently, the
-                    project can be deployed manually by applying the Terraform changes and/or
-                    running the build/deploy scripts to update the Kubernetes containers.
+                    project can be deployed manually by applying the Terraform changes and running
+                    the build/deploy scripts to update the Kubernetes containers.
                   </p>
                   <button className="btn btn-secondary btn-lg">
                     TODO
