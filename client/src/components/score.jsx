@@ -10,6 +10,7 @@ export default function Score({ score }) {
     </tr>
   );
 }
+
 Score.propTypes = {
   score: PropTypes.shape({
     userDetails: PropTypes.shape({

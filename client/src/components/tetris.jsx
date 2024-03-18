@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 
 import { fetchData } from '../services/apiService';
 import TopScores from './topScores';
+import GameMenu from './gameMenu';
+import GameOverMenu from './gameOverMenu';
 import TetrisGame from '../tetris/tetrisGame';
 
 export default function Tetris() {
@@ -45,10 +47,6 @@ export default function Tetris() {
     }
   };
 
-  const handleNameChange = (event) => {
-    setPlayerName(event.target.value);
-  };
-
   const handleStartClick = () => {
     // Validate player name
     if (playerName.trim() === '') {
@@ -89,20 +87,6 @@ export default function Tetris() {
     setTetrisGame(game);
   }, []);
 
-  useEffect(() => {
-    const startButton = document.getElementById('startButton');
-    const restartButton = document.getElementById('restartButton');
-
-    startButton.addEventListener('click', handleStartClick);
-    restartButton.addEventListener('click', handleRestartClick);
-
-    // Cleanup the event listener when the component unmounts
-    return () => {
-      startButton.removeEventListener('click', handleStartClick);
-      restartButton.removeEventListener('click', handleRestartClick);
-    };
-  }, [tetrisGame, playerName]);
-
   return (
     <div id="tetris" className="jumbotron">
       <div className="position-relative container my-5">
@@ -113,46 +97,17 @@ export default function Tetris() {
               style={{ minWidth: '262px', maxHeight: '400px' }}
             >
               <canvas id="tetrisCanvas" width="240" height="400" />
-              <div
-                id="game-menu"
-                className={
-                  `position-absolute top-50 start-50 translate-middle ${gameStarted ? 'd-none' : ''}`
-                }
-                style={{ marginTop: '40px' }}
-              >
-                <form>
-                  <div className="mb-3 mt-10">
-                    <label htmlFor="playerName" className="form-label mt-10">
-                      Enter your name:
-                      <input
-                        id="playerName"
-                        type="text"
-                        className="form-control"
-                        placeholder="Player Name"
-                        value={playerName}
-                        onChange={handleNameChange}
-                        onKeyDown={handleKeyDown}
-                      />
-                    </label>
-                  </div>
-                  <button id="startButton" type="button" className="btn btn-primary">
-                    Start
-                  </button>
-                </form>
-              </div>
-              <div
-                id="game-over"
-                className={
-                `position-absolute top-50 start-50 translate-middle ${!gameOverFlag ? 'd-none' : ''}`
-              }
-              >
-                <form>
-                  <h4 className="text-danger">GAME OVER</h4>
-                  <button id="restartButton" type="button" className="btn btn-primary">
-                    Restart
-                  </button>
-                </form>
-              </div>
+              {!gameStarted && (
+                <GameMenu
+                  playerName={playerName}
+                  setPlayerName={setPlayerName}
+                  handleStartClick={handleStartClick}
+                  handleKeyDown={handleKeyDown}
+                />
+              )}
+              {gameOverFlag && (
+                <GameOverMenu handleRestartClick={handleRestartClick} />
+              )}
             </div>
             <div className="col-md-4 text-start">
               <div id="game-stats" className={!gameStarted ? 'd-none' : ''}>

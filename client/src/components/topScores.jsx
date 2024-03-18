@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import useTopScores from '../hooks/useTopScores';
 import Score from './score';
 
-export default function TopScores({ onScoreUpdate }) {
-  const scores = useTopScores(onScoreUpdate);
+export default function TopScores({ scoreUpdateTrigger }) {
+  const scores = useTopScores(scoreUpdateTrigger);
 
   return (
     <div className="position-relative">
