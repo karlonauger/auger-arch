@@ -1,70 +1,47 @@
-import React, { useEffect, useState } from 'react';
-
-import { fetchData } from '../services/apiService';
+import React, { useReducer, useEffect, useRef } from 'react';
+import { gameReducer, initialState } from '../reducers/gameReducer';
+import { SET_PLAYER_NAME, START_GAME, END_GAME, RESTART_GAME, UPDATE_SCORE } from '../actions/gameActions';
+import { findOrCreatePlayer, postScore } from '../services/gameService';
 import TopScores from './topScores';
 import GameMenu from './gameMenu';
+import GameStats from './gameStats';
 import GameOverMenu from './gameOverMenu';
 import TetrisGame from '../tetris/tetrisGame';
 
 export default function Tetris() {
-  const [playerName, setPlayerName] = useState('');
-  const [gameStarted, setGameStarted] = useState(false);
-  const [gameOverFlag, setGameOverFlag] = useState(false);
-  const [tetrisGame, setTetrisGame] = useState(null);
-  const [gameCount, setGameCount] = useState(0); // Triggers TopScores refresh
+  const game = useRef(null);
+  const [state, dispatch] = useReducer(gameReducer, initialState);
+  const { playerName, gameStarted, gameOver, score, level, lines, gameCount } = state;
 
-  const findOrCreatePlayer = async (name) => {
-    try {
-      // Find or create user
-      const playerData = await fetchData(`/find-or-create-user/${name}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+  useEffect(() => {
+    game.current = new TetrisGame('tetrisCanvas', 'nextPieceCanvas');
+    game.current.init();
+  }, []);
 
-      return playerData;
-    } catch (error) {
-      console.error("Error finding or creating player:", error);
-    }
+  const setPlayerName = (name) => {
+    dispatch({ type: SET_PLAYER_NAME, payload: name });
   };
 
-  const postScore = async (player, score, level) => {
-    try {
-      const scoreResponse = await fetchData(`/add-score`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        // eslint-disable-next-line no-underscore-dangle
-        body: JSON.stringify({ userId: player._id, score, level }),
-      });
-
-      // Game count triggers Top Score to update
-      setGameCount((prevGameCount) => prevGameCount + 1);
-    } catch (error) {
-      console.error("Error posting player score:", error);
-    }
+  const setScore = (score, level, lines) => {
+    dispatch({ type: UPDATE_SCORE, payload: { score, level, lines } });
   };
 
-  const handleStartClick = () => {
+  const setGameOver = async (player, score, level) => {
+    await postScore(player, score, level);
+
+    dispatch({ type: END_GAME });
+  };
+
+  const handleStartClick = async () => {
     // Validate player name
     if (playerName.trim() === '') {
       alert('Please enter a valid player name.');
       return;
     }
 
-    findOrCreatePlayer(playerName).then((player) => {
-      setGameStarted(true); // Hide game menu
-
-      tetrisGame.startGame(player);
-    });
-  };
-
-  const handleRestartClick = () => {
-    setGameOverFlag(false); // Hide game over
-
-    tetrisGame.restartGame();
+    const player = await findOrCreatePlayer(playerName)
+    dispatch({ type: START_GAME, payload: player });
+    game.current.startGame(player, setScore, setGameOver);
   };
 
   const handleKeyDown = (event) => {
@@ -74,18 +51,11 @@ export default function Tetris() {
     }
   };
 
-  const gameOver = (player, score, level) => {
-    postScore(player, score, level);
+  const handleRestartClick = () => {
+    dispatch({ type: RESTART_GAME });
 
-    setGameOverFlag(true);
+    game.current.restartGame();
   };
-
-  useEffect(() => {
-    const game = new TetrisGame('tetrisCanvas', 'nextPieceCanvas', gameOver);
-    game.init();
-
-    setTetrisGame(game);
-  }, []);
 
   return (
     <div id="tetris" className="jumbotron">
@@ -105,20 +75,15 @@ export default function Tetris() {
                   handleKeyDown={handleKeyDown}
                 />
               )}
-              {gameOverFlag && (
+              {gameOver && (
                 <GameOverMenu handleRestartClick={handleRestartClick} />
               )}
             </div>
             <div className="col-md-4 text-start">
-              <div id="game-stats" className={!gameStarted ? 'd-none' : ''}>
-                <h5>Next Piece</h5>
-                <canvas id="nextPieceCanvas" width="80" height="80" />
-                <h5>Player: <span id="player">{playerName}</span></h5>
-                <h5>Score: <span id="score">0</span></h5>
-                <h5>Level: <span id="level">0</span></h5>
-                <h5>Lines: <span id="lines">0</span></h5>
+              <div className={!gameStarted ? 'd-none' : ''}>
+                <GameStats playerName={playerName} score={score} level={level} lines={lines} />
               </div>
-              <div id="game-controls" className={gameStarted ? 'd-none' : ''}>
+              <div className={gameStarted ? 'd-none' : ''}>
                 <h5>Controls</h5>
                 <p>
                   Rotate Clockwise - Z Key / Up Arrow<br />
@@ -157,7 +122,7 @@ export default function Tetris() {
               </div>
             </div>
             <div className="col-md-4">
-              <TopScores onScoreUpdate={gameCount} />
+              <TopScores scoreUpdateTrigger={gameCount} />
             </div>
           </div>
         </div>

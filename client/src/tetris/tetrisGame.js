@@ -9,9 +9,8 @@ export default class TetrisGame {
    * Constructor for creating a TetrisGame instance.
    * @param {string} canvasId - The ID of the main canvas element.
    * @param {string} nextCanvasId - The ID of the canvas element for displaying the next Tetris piece.
-   * @param {function} gameOverCB - Callback function invoked when the game is over.
    */
-  constructor(canvasId, nextCanvasId, gameOverCB) {
+  constructor(canvasId, nextCanvasId) {
     // Array of block names for loading Tetris block images.
     this.blockNames = [
       'Red',
@@ -53,7 +52,7 @@ export default class TetrisGame {
     this.arena = createMatrix(12, 20);
     this.score = 0;
     this.lines = 0;
-    this.level = 1;
+    this.level = 0;
     this.gameOver = false;
     this.nextPiece = null;
     this.piece = null;
@@ -71,9 +70,6 @@ export default class TetrisGame {
     this.nextCanvas = document.getElementById(nextCanvasId);
     this.nextContext = this.nextCanvas.getContext('2d');
     this.nextContext.scale(20, 20); // 1 = block width
-
-    // Callback invoked when the game is over. Used to post score.
-    this.gameOverCB = gameOverCB;
 
     this.handleKeyDown = this.handleKeyDown.bind(this);
   }
@@ -109,10 +105,15 @@ export default class TetrisGame {
   /**
    * Start the Tetris game for a given player.
    * @param {player} string - Player's name. To be passed back with score for saving
+   * @param {function} updateStatsCB - Callback function invoked when the game stats are update.
+   * @param {function} gameOverCB - Callback function invoked when the game is over.
    */
-  startGame(player) {
-    document.addEventListener('keydown', this.handleKeyDown);
+  startGame(player, updateStatsCB, gameOverCB) {
     this.player = player;
+    this.updateStatsCB = updateStatsCB;
+    this.gameOverCB = gameOverCB;
+
+    document.addEventListener('keydown', this.handleKeyDown);
 
     this.restartGame();
   }
@@ -126,7 +127,7 @@ export default class TetrisGame {
     this.lines = 0;
     this.level = 0;
     this.gameOver = false;
-    this.updateStats();
+    this.updateStatsCB(this.score, this.level, this.lines);
     this.update();
   }
 
@@ -157,15 +158,6 @@ export default class TetrisGame {
   }
 
   /**
-   * Update dom state elements
-   */
-  updateStats() {
-    document.getElementById('score').innerText = this.score;
-    document.getElementById('level').innerText = this.level;
-    document.getElementById('lines').innerText = this.lines;
-  }
-
-  /**
    * Move the current piece down. Resolve collisions.
    * @param {player} boolean - If this move was made by the player.
    */
@@ -176,10 +168,10 @@ export default class TetrisGame {
       this.merge();
       this.reset();
       this.arenaSweep();
-      this.updateStats();
+      this.updateStatsCB(this.score, this.level, this.lines);
     } else if (player) {
       this.score += 1;
-      this.updateStats();
+      this.updateStatsCB(this.score, this.level, this.lines);
     }
     this.dropCounter = 0;
   }

@@ -25,5 +25,5 @@ export default function TopScores({ scoreUpdateTrigger }) {
 }
 
 TopScores.propTypes = {
-  onScoreUpdate: PropTypes.number.isRequired,
+  scoreUpdateTrigger: PropTypes.number.isRequired,
 };
