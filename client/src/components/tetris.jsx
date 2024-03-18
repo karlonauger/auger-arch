@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { config } from '../config';
+import { fetchData } from '../services/apiService';
 import TopScores from './topScores';
 import TetrisGame from '../tetris/tetrisGame';
 
@@ -14,28 +14,22 @@ export default function Tetris() {
   const findOrCreatePlayer = async (name) => {
     try {
       // Find or create user
-      const response = await fetch(`${config.apiEndpoint}/find-or-create-user/${name}`, {
+      const playerData = await fetchData(`/find-or-create-user/${name}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      return await response.json();
+      return playerData;
     } catch (error) {
-      console.error(error);
-
-      throw error;
+      console.error("Error finding or creating player:", error);
     }
   };
 
   const postScore = async (player, score, level) => {
     try {
-      const scoreResponse = await fetch(`${config.apiEndpoint}/add-score`, {
+      const scoreResponse = await fetchData(`/add-score`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -44,16 +38,10 @@ export default function Tetris() {
         body: JSON.stringify({ userId: player._id, score, level }),
       });
 
-      if (!scoreResponse.ok) {
-        throw new Error(`HTTP error! Status: ${scoreResponse.status}`);
-      }
-
-      await scoreResponse.json().then(() => {
-        // Game count triggers Top Score to update
-        setGameCount((prevGameCount) => prevGameCount + 1);
-      });
+      // Game count triggers Top Score to update
+      setGameCount((prevGameCount) => prevGameCount + 1);
     } catch (error) {
-      console.error(error);
+      console.error("Error posting player score:", error);
     }
   };
 

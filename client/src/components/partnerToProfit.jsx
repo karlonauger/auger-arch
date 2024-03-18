@@ -16,7 +16,7 @@ export default function PartnerToProfit() {
             <div className="col-md-6">
               <h1 className="text-body-emphasis">Partner To Profit</h1>
               <p className="mx-auto fs-4 text-muted">
-                Calculated planning, analysis and decision-making for Buisness Partnerships
+                Calculated planning, analysis and decision-making for Business Partnerships
               </p>
               <hr className="my-4" />
               <p className="mx-auto text-muted">
