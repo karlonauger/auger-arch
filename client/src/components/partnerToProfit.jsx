@@ -7,21 +7,15 @@ export default function PartnerToProfit() {
         <div className="p-5 text-center bg-body-tertiary rounded-3">
           <div className="row">
             <div className="col-md-6 mb-3">
-              <img
-                src="partner_to_profit_ss.png"
-                alt="Partner To Profit Screenshot"
-                className="img-fluid rounded-3 border border-5 border-primary-subtle"
-              />
-            </div>
-            <div className="col-md-6">
-              <h1 className="text-body-emphasis">Partner To Profit</h1>
-              <p className="mx-auto fs-4 text-muted">
-                Calculated planning, analysis and decision-making for Business Partnerships
+              <h2 className="text-body-emphasis">Partner To Profit</h2>
+              <p className="mx-auto fs-5 text-muted">
+                Calculated planning and analysis for Business Partnerships
               </p>
-              <hr className="my-4" />
+              <hr className="my-3" />
               <p className="mx-auto text-muted">
-                PHP-based SAAS application to model financial outcomes of business partnerships.
-                Promotianal site generated 75+ leads and served over 4k users in the first year.
+                Developed SaaS application designed to simulate financial outcomes of business
+                partnerships. The accompaning promotianal site generated over 75 leads and served
+                more than 4,000 users in its inaugural year.
               </p>
               <div className="d-inline-flex gap-2">
                 <a
@@ -43,6 +37,13 @@ export default function PartnerToProfit() {
                   Visit App
                 </a>
               </div>
+            </div>
+            <div className="col-md-6">
+              <img
+                src="partner_to_profit_ss.png"
+                alt="Partner To Profit Screenshot"
+                className="img-fluid rounded-3"
+              />
             </div>
           </div>
         </div>
